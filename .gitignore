@@ -1,0 +1,6 @@
+*.pyc
+*.json
+*.sublime-settings
+*.tmLanguage
+*.tmTheme
+*.cache
