@@ -4,3 +4,5 @@
 *.tmLanguage
 *.tmTheme
 *.cache
+examples
+notes
