@@ -79,7 +79,7 @@ theme_template = """<?xml version="1.0" encoding="UTF-8"?>
 pattern = """
 		<dict>
 			<key>match</key>
-			<string>\\b%s\\b</string>
+			<string>%s</string>
 			<key>name</key>
 			<string>%s</string>
 		</dict>

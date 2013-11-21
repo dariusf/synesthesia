@@ -5,7 +5,7 @@
         "args": {}
     },
     {
-        "caption": "Synesthesia: Create Syntax Definition",
+        "caption": "Synesthesia: Compile Syntax Definition",
         "command": "synesthesia_compile",
         "args": {"0": "$file"}
     }

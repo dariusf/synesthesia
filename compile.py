@@ -34,14 +34,22 @@ class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
 		patterns = []
 		theme_scopes = []
 		pattern_map = entries["patterns"]
+		count = 0
 
 		for key in pattern_map.keys():
-			keyword = key
+			regex = key
 			colour = pattern_map[key].lower()
 			if colour in colours.name_to_hex:
 				colour = colours.name_to_hex[colour]
-			keyname = strip_non_alpha(keyword)
-			patterns.append(templates.pattern % (keyword, keyname))
+			keyname = strip_non_alpha(regex)
+			if keyname == regex:
+				# regex is completely alphanumeric;
+				# automatically enforce word boundary
+				regex = "\\b%s\\b" % regex
+
+			keyname = "%s%d" % (keyname, count)
+			count = count + 1
+			patterns.append(templates.pattern % (regex, keyname))
 			theme_scopes.append(templates.theme_element % (keyname, keyname, colour))
 
 		patterns = concat_string_list(patterns)
@@ -66,5 +74,4 @@ class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
 		print "Written to %s." % theme_filename
 		write_file(settings_filename, templates.default_settings_template % filename)
 		print "Written to %s." % settings_filename
-		print "You may have to reload Sublime Text to see your changes take effect."
 		sublime.status_message("%s syntax files generated." % filename)
