@@ -26,7 +26,7 @@ def get_file_name(filepath):
 def concat_string_list(lst):
 	return ''.join(lst)
 
-class CompileCommand(sublime_plugin.WindowCommand):
+class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
     def run(self, cmd = []):
 		filepath = os.path.abspath(cmd[0])
 		filename = get_file_name(filepath)

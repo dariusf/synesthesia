@@ -1,4 +1,4 @@
 {
 	"cmd": ["$file"],
-	"target": "compile"
+	"target": "synesthesia_compile"
 }

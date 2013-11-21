@@ -1,0 +1,12 @@
+[
+    {
+        "caption": "Synesthesia: Delete Syntax Definition",
+        "command": "synesthesia_delete",
+        "args": {}
+    },
+    {
+        "caption": "Synesthesia: Create Syntax Definition",
+        "command": "synesthesia_compile",
+        "args": {"0": "$file"}
+    }
+]
