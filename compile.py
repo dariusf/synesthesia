@@ -1,6 +1,7 @@
 import re, uuid, os, json
 import sublime, sublime_plugin
 import templates
+import colours
 
 PATH_SEPARATOR = "\\" if sublime.platform() == "windows" else "/"
 
@@ -36,7 +37,9 @@ class CompileCommand(sublime_plugin.WindowCommand):
 
 		for key in pattern_map.keys():
 			keyword = key
-			colour = pattern_map[key] # case insensitive, colour aliases
+			colour = pattern_map[key].lower()
+			if colour in colours.name_to_hex:
+				colour = colours.name_to_hex[colour]
 			keyname = strip_non_alpha(keyword)
 			patterns.append(templates.pattern % (keyword, keyname))
 			theme_scopes.append(templates.theme_element % (keyname, keyname, colour))
