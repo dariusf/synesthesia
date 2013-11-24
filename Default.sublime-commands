@@ -7,6 +7,6 @@
     {
         "caption": "Synesthesia: Compile Syntax Definition",
         "command": "synesthesia_compile",
-        "args": {"0": "$file"}
+        "args": {}
     }
 ]

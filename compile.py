@@ -28,7 +28,8 @@ def concat_string_list(lst):
 
 class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
     def run(self, cmd = []):
-		filepath = os.path.abspath(cmd[0])
+		path = cmd[0] if len(cmd) > 0 else self.window.active_view().file_name()
+		filepath = os.path.abspath(path)
 		filename = get_file_name(filepath)
 		entries = json.loads(read_file(filepath))
 		patterns = []
