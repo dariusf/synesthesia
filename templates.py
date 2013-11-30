@@ -14,7 +14,7 @@ scope_template = """<?xml version="1.0" encoding="UTF-8"?>
 %s
 	</array>
 	<key>scopeName</key>
-	<string>text.%s</string>
+	<string>%s.%s</string>
 	<key>uuid</key>
 	<string>%s</string>
 </dict>

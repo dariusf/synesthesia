@@ -89,6 +89,7 @@ class HighlightingScheme():
 
 	def save(self, themename):
 		# initialization
+		autocompletion = "autocompletion" in self.data and self.data["autocompletion"]
 		patterns = []
 		theme_scopes = []
 		pattern_map = self.data["patterns"]
@@ -138,7 +139,7 @@ class HighlightingScheme():
 		scope_filename = package_directory + themename + ".tmLanguage"
 		theme_filename = package_directory + themename + ".tmTheme"
 		settings_filename = package_directory + themename + ".sublime-settings"
-		write_file(scope_filename, templates.scope_template % (themename, patterns, themename, uuid.uuid4()))
+		write_file(scope_filename, templates.scope_template % (themename, patterns, "source" if autocompletion else "text", themename, uuid.uuid4()))
 		print "Written to %s." % scope_filename
 		write_file(theme_filename, templates.theme_template % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
 		print "Written to %s." % theme_filename
