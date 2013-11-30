@@ -10,6 +10,11 @@
         "args": {}
     },
     {
+        "caption": "Synesthesia: Sample Highlighting Scheme",
+        "command": "synesthesia_sample",
+        "args": {}
+    },
+    {
         "caption": "Synesthesia: Compile Highlighting Scheme",
         "command": "synesthesia_compile",
         "args": {}

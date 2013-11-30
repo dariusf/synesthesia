@@ -22,6 +22,15 @@ scope = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 new_file = """{
+	"patterns": {
+		"hello": "#0CBDE8",
+		"world": "dodgerblue"
+		$0
+	}
+}"""
+
+sample_file = """{
+
 	"include": ["lightmarkdown"],
 	"autocompletion": false,
 	"patterns": {
