@@ -19,12 +19,11 @@ def read_file(filepath):
 def strip_non_alpha(string):
 	return re.sub("[^A-Za-z]+", "", string)
 
-def remove_ext(filename):
-	return filename.split(".")[0]
-
-def get_file_name_with_ext(filepath):
-	temp = filepath.split("\\")
-	return temp[len(temp)-1]
+def split_filepath(abspath):
+	segments = abspath.split(PATH_SEPARATOR)
+	filename = segments[-1:][0]
+	extparts = filename.split(".")
+	return PATH_SEPARATOR.join(segments[:-1]), extparts[0], '.'.join(extparts[1:])
 
 def concat_string_list(lst):
 	return ''.join(lst)
@@ -42,22 +41,29 @@ def read_default_settings(view):
 
 	return None
 
+def load_json_data(filepath):
+	_, themename, ext = split_filepath(filepath)
+
+	entries = None
+	try:
+		entries = json.loads(read_file(filepath))
+	except ValueError:
+		sublime.status_message("%s is not a valid JSON file." % themename + ext)
+
+	return themename, entries
+
 class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
     def run(self, cmd = []):
-    	# prepare input file paths
+
 		path = cmd[0] if len(cmd) > 0 else self.window.active_view().file_name()
 		filepath = os.path.abspath(path)
-		filename = get_file_name_with_ext(filepath)
-		themename = remove_ext(filename)
+		themename, entries = load_json_data(filepath)
+		directory, _, _ = split_filepath(filepath)
 
-		# load input file
-		try:
-			entries = json.loads(read_file(filepath))
-		except ValueError:
-			sublime.status_message("%s is not a vaild JSON file." % filename)
+		if not entries:
 			return
 
-		hs = HighlightingScheme(entries)
+		hs = HighlightingScheme(directory, entries)
 
 		default_colours = read_default_settings(self.window.active_view())
 		if default_colours:
@@ -77,7 +83,8 @@ class HighlightingScheme():
 
 	default_colours = templates.default_colours_template
 
-	def __init__(self, data):
+	def __init__(self, directory, data):
+		self.directory = directory
 		self.data = data
 
 	def save(self, themename):
@@ -86,6 +93,25 @@ class HighlightingScheme():
 		theme_scopes = []
 		pattern_map = self.data["patterns"]
 		count = 0
+
+		# resolve dependencies
+		if "include" in self.data:
+			inclusions = self.data["include"]
+			already_included = [themename]
+			while len(inclusions) > 0:
+				i = inclusions.pop()
+				# prevents recursive dependency, since it only looks in the same directory
+				if i not in already_included:
+					already_included.append(i)
+					_, entries = load_json_data("%s%s%s.json" % (self.directory, PATH_SEPARATOR, i))
+					if "include" in entries:
+						inclusions.extend(entries["include"])
+					if "patterns" in entries:
+						new_patterns = entries["patterns"]
+						for key in new_patterns.keys():
+							# won't add colling names
+							if key not in pattern_map:
+								pattern_map[key] = new_patterns[key]
 
 		# generate syntax and theme files
 		for key in pattern_map.keys():
@@ -108,7 +134,7 @@ class HighlightingScheme():
 		theme_scopes = concat_string_list(theme_scopes)
 
 		# produce output files
-		package_directory = sublime.packages_path() + "\\Synesthesia\\"
+		package_directory = sublime.packages_path() + PATH_SEPARATOR + "Synesthesia" + PATH_SEPARATOR
 		scope_filename = package_directory + themename + ".tmLanguage"
 		theme_filename = package_directory + themename + ".tmTheme"
 		settings_filename = package_directory + themename + ".sublime-settings"
