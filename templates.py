@@ -25,8 +25,16 @@ new_file = """{
 	"include": ["lightmarkdown"],
 	"autocompletion": false,
 	"patterns": {
-		$0"\\b(?hello)\\b": "dodgerblue",
-		"world": "#ff0000"
+		"hello world": "#ff0000",
+		"colours|colour aliases": "plum",
+		"options are supported too": {
+			"colour": "plum",
+			"bold": true,
+			"italics": true,
+			"whole-word": true,
+			"case-insensitive": true
+		}
+		$0
 	}
 }"""
 
@@ -69,21 +77,6 @@ theme = """<?xml version="1.0" encoding="UTF-8"?>
 </plist>
 """
 
-# <dict>
-# 	<key>name</key>
-# 	<string>Comment</string>
-# 	<key>scope</key>
-# 	<string>comment.block</string>
-# 	<key>settings</key>
-# 	<dict>
-# 		<key>background</key>
-# 		<string>#200020</string>
-# 		<key>fontStyle</key>
-# 		<string>italic</string>
-# 		<key>foreground</key>
-# 		<string>#404080</string>
-# 	</dict>
-# </dict>
 
 pattern = """
 		<dict>
@@ -102,13 +95,29 @@ theme_element = """
 			<string>%s</string>
 			<key>settings</key>
 			<dict>
-				<key>foreground</key>
-				<string>%s</string>
+%s
 			</dict>
 		</dict>
 """
 
+theme_element_foreground = """
+				<key>foreground</key>
+				<string>%s</string>
+"""
+
+theme_element_fontstyle = """
+				<key>fontStyle</key>
+				<string>%s</string>
+"""
+
+theme_element_background = """
+				<key>background</key>
+				<string>%s</string>
+"""
+
 default_settings = """
+
+
 {
 	"color_scheme": "Packages/Synesthesia/%s.tmTheme"
 }

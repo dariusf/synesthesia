@@ -25,9 +25,6 @@ def split_filepath(abspath):
 	extparts = filename.split(".")
 	return PATH_SEPARATOR.join(segments[:-1]), extparts[0], '.'.join(extparts[1:])
 
-def concat_string_list(lst):
-	return ''.join(lst)
-
 def read_default_settings(view):
 	colour_scheme_path = re.sub("Packages", sublime.packages_path(), view.settings().get('color_scheme'))
 
@@ -95,7 +92,7 @@ class HighlightingScheme():
 		pattern_map = self.data["patterns"]
 		count = 0
 
-		# resolve dependencies
+		# resolve dependencies (depth-first)
 		if "include" in self.data:
 			inclusions = self.data["include"]
 			already_included = [themename]
@@ -114,31 +111,63 @@ class HighlightingScheme():
 							if key not in pattern_map:
 								pattern_map[key] = new_patterns[key]
 
+		def colour(c):
+			c = c.lower()
+			if c in colours.name_to_hex:
+				c = colours.name_to_hex[c]
+			return c
+
 		# generate syntax and theme files
 		for key in pattern_map.keys():
 			regex = key
-			colour = pattern_map[key].lower()
-			if colour in colours.name_to_hex:
-				colour = colours.name_to_hex[colour]
+			value = pattern_map[key]
+
+			options = []
+			case_insensitive = False
+			whole_word = False
+
+			if type(value) == str or type(value) == unicode:
+				options.append(templates.theme_element_foreground % colour(value))
+			elif type(value) == dict:
+				fontstyle = []
+				if "colour" in value:
+					options.append(templates.theme_element_foreground % colour(value["colour"]))
+				if "background" in value:
+					options.append(templates.theme_element_background % colour(value["background"]))
+				if "italics" in value and value["italics"]:
+					fontstyle.append("italic")
+				if "bold" in value and value["bold"]:
+					fontstyle.append("bold")
+				if "whole-word" in value and value["whole-word"]:
+					whole_word = True
+				if "case-insensitive" in value and value["case-insensitive"]:
+					case_insensitive = True
+
+				if len(fontstyle) > 0:
+					options.append(templates.theme_element_fontstyle % ' '.join(fontstyle))
+
 			keyname = strip_non_alpha(regex)
-			if keyname == regex:
+
+			if keyname == regex or whole_word:
 				# regex is completely alphabetical;
 				# automatically enforce word boundary
 				regex = "\\b%s\\b" % regex
-
-			keyname = "%s%d" % (keyname, count)
+			if case_insensitive:
+				regex = "(?i:%s)" % regex
+			keyname = "%s_%d" % (keyname, count)
 			count = count + 1
-			patterns.append(templates.pattern % (regex, keyname))
-			theme_scopes.append(templates.theme_element % (keyname, keyname, colour))
 
-		patterns = concat_string_list(patterns)
-		theme_scopes = concat_string_list(theme_scopes)
+			patterns.append(templates.pattern % (regex, keyname))
+			theme_scopes.append(templates.theme_element % (keyname, keyname, ''.join(options)))
+
+		patterns = ''.join(patterns)
+		theme_scopes = ''.join(theme_scopes)
 
 		# produce output files
 		package_directory = os.path.join(sublime.packages_path(), "Synesthesia")
-		scope_filename = package_directory + themename + ".tmLanguage"
-		theme_filename = package_directory + themename + ".tmTheme"
-		settings_filename = package_directory + themename + ".sublime-settings"
+		scope_filename = os.path.join(package_directory, themename + ".tmLanguage")
+		theme_filename = os.path.join(package_directory, themename + ".tmTheme")
+		settings_filename = os.path.join(package_directory, themename + ".sublime-settings")
 		write_file(scope_filename, templates.scope % (themename, patterns, "source" if autocompletion else "text", themename, uuid.uuid4()))
 		print "Written to %s." % scope_filename
 		write_file(theme_filename, templates.theme % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
