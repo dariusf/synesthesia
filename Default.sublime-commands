@@ -5,6 +5,11 @@
         "args": {}
     },
     {
+        "caption": "Synesthesia: New Highlighting Scheme",
+        "command": "synesthesia_new",
+        "args": {}
+    },
+    {
         "caption": "Synesthesia: Compile Highlighting Scheme",
         "command": "synesthesia_compile",
         "args": {}

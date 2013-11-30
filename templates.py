@@ -1,5 +1,5 @@
 
-scope_template = """<?xml version="1.0" encoding="UTF-8"?>
+scope = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -21,7 +21,16 @@ scope_template = """<?xml version="1.0" encoding="UTF-8"?>
 </plist>
 """
 
-default_colours_template = """
+new_file = """{
+	"include": ["lightmarkdown"],
+	"autocompletion": false,
+	"patterns": {
+		$0"\\b(?hello)\\b": "dodgerblue",
+		"world": "#ff0000"
+	}
+}"""
+
+default_colours = """
 		<dict>
 			<key>settings</key>
 			<dict>
@@ -41,7 +50,7 @@ default_colours_template = """
 		</dict>
 """
 
-theme_template = """<?xml version="1.0" encoding="UTF-8"?>
+theme = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -99,7 +108,7 @@ theme_element = """
 		</dict>
 """
 
-default_settings_template = """
+default_settings = """
 {
 	"color_scheme": "Packages/Synesthesia/%s.tmTheme"
 }

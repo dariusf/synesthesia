@@ -81,7 +81,7 @@ class HighlightingScheme():
 
 	"""
 
-	default_colours = templates.default_colours_template
+	default_colours = templates.default_colours
 
 	def __init__(self, directory, data):
 		self.directory = directory
@@ -104,7 +104,7 @@ class HighlightingScheme():
 				# prevents recursive dependency, since it only looks in the same directory
 				if i not in already_included:
 					already_included.append(i)
-					_, entries = load_json_data("%s%s%s.json" % (self.directory, PATH_SEPARATOR, i))
+					_, entries = load_json_data(os.path.join(self.directory, i + '.json'))
 					if "include" in entries:
 						inclusions.extend(entries["include"])
 					if "patterns" in entries:
@@ -135,14 +135,14 @@ class HighlightingScheme():
 		theme_scopes = concat_string_list(theme_scopes)
 
 		# produce output files
-		package_directory = sublime.packages_path() + PATH_SEPARATOR + "Synesthesia" + PATH_SEPARATOR
+		package_directory = os.path.join(sublime.packages_path(), "Synesthesia")
 		scope_filename = package_directory + themename + ".tmLanguage"
 		theme_filename = package_directory + themename + ".tmTheme"
 		settings_filename = package_directory + themename + ".sublime-settings"
-		write_file(scope_filename, templates.scope_template % (themename, patterns, "source" if autocompletion else "text", themename, uuid.uuid4()))
+		write_file(scope_filename, templates.scope % (themename, patterns, "source" if autocompletion else "text", themename, uuid.uuid4()))
 		print "Written to %s." % scope_filename
-		write_file(theme_filename, templates.theme_template % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
+		write_file(theme_filename, templates.theme % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
 		print "Written to %s." % theme_filename
-		write_file(settings_filename, templates.default_settings_template % themename)
+		write_file(settings_filename, templates.default_settings % themename)
 		print "Written to %s." % settings_filename
 		sublime.status_message("Highlighting scheme %s generated." % themename)
