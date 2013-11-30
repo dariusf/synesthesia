@@ -144,4 +144,4 @@ class HighlightingScheme():
 		print "Written to %s." % theme_filename
 		write_file(settings_filename, templates.default_settings_template % themename)
 		print "Written to %s." % settings_filename
-		sublime.status_message("%s syntax files generated." % themename)
+		sublime.status_message("Highlighting scheme %s generated." % themename)

@@ -1,11 +1,11 @@
 [
     {
-        "caption": "Synesthesia: Delete Syntax Definition",
+        "caption": "Synesthesia: Delete Highlighting Scheme",
         "command": "synesthesia_delete",
         "args": {}
     },
     {
-        "caption": "Synesthesia: Compile Syntax Definition",
+        "caption": "Synesthesia: Compile Highlighting Scheme",
         "command": "synesthesia_compile",
         "args": {}
     }
