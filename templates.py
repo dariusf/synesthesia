@@ -38,6 +38,7 @@ sample_file = """{
 		"colours|colour aliases": "plum",
 		"options are supported too": {
 			"colour": "plum",
+			"background": "blue",
 			"bold": true,
 			"italics": true,
 			"whole-word": true,
