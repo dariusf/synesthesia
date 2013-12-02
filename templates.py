@@ -22,7 +22,7 @@ scope = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 new_file = """{
-	"patterns": {
+	"keywords": {
 		"hello": "#0CBDE8",
 		"world": "dodgerblue"
 		$0
@@ -33,7 +33,7 @@ sample_file = """{
 
 	"include": ["lightmarkdown"],
 	"autocompletion": false,
-	"patterns": {
+	"keywords": {
 		"hello world": "#ff0000",
 		"colours|colour aliases": "plum",
 		"options are supported too": {
@@ -87,7 +87,7 @@ theme = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 
-pattern = """
+keyword = """
 		<dict>
 			<key>match</key>
 			<string>%s</string>

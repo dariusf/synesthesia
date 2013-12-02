@@ -87,9 +87,9 @@ class HighlightingScheme():
 	def save(self, themename):
 		# initialization
 		autocompletion = "autocompletion" in self.data and self.data["autocompletion"]
-		patterns = []
+		keywords = []
 		theme_scopes = []
-		pattern_map = self.data["patterns"]
+		keyword_map = self.data["keywords"]
 		count = 0
 
 		# resolve dependencies (depth-first)
@@ -104,12 +104,12 @@ class HighlightingScheme():
 					_, entries = load_json_data(os.path.join(self.directory, i + '.json'))
 					if "include" in entries:
 						inclusions.extend(entries["include"])
-					if "patterns" in entries:
-						new_patterns = entries["patterns"]
-						for key in new_patterns.keys():
+					if "keywords" in entries:
+						new_keywords = entries["keywords"]
+						for key in new_keywords.keys():
 							# won't add colling names
-							if key not in pattern_map:
-								pattern_map[key] = new_patterns[key]
+							if key not in keyword_map:
+								keyword_map[key] = new_keywords[key]
 
 		def colour(c):
 			c = c.lower()
@@ -118,9 +118,9 @@ class HighlightingScheme():
 			return c
 
 		# generate syntax and theme files
-		for key in pattern_map.keys():
+		for key in keyword_map.keys():
 			regex = key
-			value = pattern_map[key]
+			value = keyword_map[key]
 
 			options = []
 			case_insensitive = False
@@ -157,10 +157,10 @@ class HighlightingScheme():
 			keyname = "%s_%d" % (keyname, count)
 			count = count + 1
 
-			patterns.append(templates.pattern % (regex, keyname))
+			keywords.append(templates.keyword % (regex, keyname))
 			theme_scopes.append(templates.theme_element % (keyname, keyname, ''.join(options)))
 
-		patterns = ''.join(patterns)
+		keywords = ''.join(keywords)
 		theme_scopes = ''.join(theme_scopes)
 
 		# produce output files
@@ -168,7 +168,7 @@ class HighlightingScheme():
 		scope_filename = os.path.join(package_directory, themename + ".tmLanguage")
 		theme_filename = os.path.join(package_directory, themename + ".tmTheme")
 		settings_filename = os.path.join(package_directory, themename + ".sublime-settings")
-		write_file(scope_filename, templates.scope % (themename, patterns, "source" if autocompletion else "text", themename, uuid.uuid4()))
+		write_file(scope_filename, templates.scope % (themename, keywords, "source" if autocompletion else "text", themename, uuid.uuid4()))
 		print "Written to %s." % scope_filename
 		write_file(theme_filename, templates.theme % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
 		print "Written to %s." % theme_filename
