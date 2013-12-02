@@ -46,6 +46,8 @@ def load_json_data(filepath):
 		entries = json.loads(read_file(filepath))
 	except ValueError:
 		sublime.status_message("%s is not a valid JSON file." % themename + ext)
+	except IOError:
+		print "%s could not be loaded." % themename + ext
 
 	return themename, entries
 
@@ -102,14 +104,15 @@ class HighlightingScheme():
 				if i not in already_included:
 					already_included.append(i)
 					_, entries = load_json_data(os.path.join(self.directory, i + '.json'))
-					if "include" in entries:
-						inclusions.extend(entries["include"])
-					if "keywords" in entries:
-						new_keywords = entries["keywords"]
-						for key in new_keywords.keys():
-							# won't add colling names
-							if key not in keyword_map:
-								keyword_map[key] = new_keywords[key]
+					if entries is not None:
+						if "include" in entries:
+							inclusions.extend(entries["include"])
+						if "keywords" in entries:
+							new_keywords = entries["keywords"]
+							for key in new_keywords.keys():
+								# won't add colling names
+								if key not in keyword_map:
+									keyword_map[key] = new_keywords[key]
 
 		def colour(c):
 			c = c.lower()
