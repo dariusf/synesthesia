@@ -45,9 +45,9 @@ def load_json_data(filepath):
 	try:
 		entries = json.loads(read_file(filepath))
 	except ValueError:
-		sublime.status_message("%s is not a valid JSON file." % themename + ext)
+		sublime.status_message("%s.%s is not a valid JSON file." % (themename, ext))
 	except IOError:
-		print "%s could not be loaded." % themename + ext
+		print "%s.%s could not be loaded." % (themename, ext)
 
 	return themename, entries
 
@@ -151,7 +151,7 @@ class HighlightingScheme():
 
 			keyname = strip_non_alpha(regex)
 
-			if keyname == regex or whole_word:
+			if whole_word or keyname == regex:
 				# regex is completely alphabetical;
 				# automatically enforce word boundary
 				regex = "\\b%s\\b" % regex
