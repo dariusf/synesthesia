@@ -104,7 +104,11 @@ class HighlightingScheme():
 				if i not in already_included:
 					already_included.append(i)
 					_, entries = load_json_data(os.path.join(self.directory, i + '.json'))
+					if entries is None:
+						print "Searching in Packages/Synesthesia/include..."
+						_, entries = load_json_data(os.path.join(sublime.packages_path(), "Synesthesia", "include", i + '.json'))
 					if entries is not None:
+						print "%s loaded." % (i + '.json')
 						if "include" in entries:
 							inclusions.extend(entries["include"])
 						if "keywords" in entries:

@@ -22,7 +22,7 @@ Getting Started
 Functionality
 -------------
 
-Most of the plugin's functionality is based on 'highlighting schemes' - JSON files with a list of keywords and the colours to highlight them with. The first step is to create such a file. Select **Sample Highlighting Scheme** from the Command Palette for an example that uses most of the plugin's features. You may also wish to browse the examples in `Synesthesia/examples`.
+Most of the plugin's functionality is based on 'highlighting schemes' - JSON files with a list of keywords and the colours to highlight them with. The first step is to create such a file. Select **Sample Highlighting Scheme** from the Command Palette for an example that uses most of the plugin's features. You may also wish to browse the examples in `Synesthesia/include`.
 
 Once you're satisfied with your scheme, compile it. Synthesia will generate the configuration files necessary for Sublime Text to highlight everything.
 
