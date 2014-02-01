@@ -94,6 +94,8 @@ class HighlightingScheme():
 		keyword_map = self.data["keywords"]
 		count = 0
 
+		extensions = "extensions" in self.data and self.data["extensions"] or ["txt"]
+
 		# resolve dependencies (depth-first)
 		if "include" in self.data:
 			inclusions = self.data["include"]
@@ -169,16 +171,18 @@ class HighlightingScheme():
 
 		keywords = ''.join(keywords)
 		theme_scopes = ''.join(theme_scopes)
+		scope_extensions = ''.join([(templates.additional_extension % x) for x in extensions])
+		settings_extensions = ', '.join([(templates.additional_settings_extension % x) for x in extensions])
 
 		# produce output files
 		package_directory = os.path.join(sublime.packages_path(), "Synesthesia")
 		scope_filename = os.path.join(package_directory, themename + ".tmLanguage")
 		theme_filename = os.path.join(package_directory, themename + ".tmTheme")
 		settings_filename = os.path.join(package_directory, themename + ".sublime-settings")
-		write_file(scope_filename, templates.scope % (themename, keywords, "source" if autocompletion else "text", themename, uuid.uuid4()))
+		write_file(scope_filename, templates.scope % (scope_extensions, themename, keywords, "source" if autocompletion else "text", themename, uuid.uuid4()))
 		print "Written to %s." % scope_filename
 		write_file(theme_filename, templates.theme % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
 		print "Written to %s." % theme_filename
-		write_file(settings_filename, templates.default_settings % themename)
+		write_file(settings_filename, templates.default_settings % (themename, settings_extensions))
 		print "Written to %s." % settings_filename
 		sublime.status_message("Highlighting scheme %s generated." % themename)

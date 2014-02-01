@@ -5,7 +5,8 @@ scope = """<?xml version="1.0" encoding="UTF-8"?>
 <dict>
 	<key>fileTypes</key>
 	<array>
-		<string></string>
+		<string>txt</string>
+%s
 	</array>
 	<key>name</key>
 	<string>%s</string>
@@ -19,6 +20,9 @@ scope = """<?xml version="1.0" encoding="UTF-8"?>
 	<string>%s</string>
 </dict>
 </plist>
+"""
+
+additional_extension = """		<string>%s</string>
 """
 
 new_file = """{
@@ -125,10 +129,10 @@ theme_element_background = """
 				<string>%s</string>
 """
 
-default_settings = """
+additional_settings_extension = "\"%s\""
 
-
-{
-	"color_scheme": "Packages/Synesthesia/%s.tmTheme"
+default_settings = """{
+	"color_scheme": "Packages/Synesthesia/%s.tmTheme",
+	"extensions": [%s]
 }
 """
