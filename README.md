@@ -72,7 +72,23 @@ This will cause the keywords and colours in `LightMarkdown.json` to be copied in
 - Dependencies will be resolved recursively. Circular depedenceies are guarded against.
 - Dependencies are loaded depth-first, in the order they are specified. If a keyword has appeared before, it won't be overridden should it appear again in a later-loaded dependency.
 
+### Extensions
+
+You can specify new extensions for your highlighting schemes under the `extensions` key.
+
+	{
+		'extensions': ['txt', 'etc'],
+		'keywords': {...}
+	}
+
+`txt` will be used by default if you don't specify anything.
+
 ### Autocompletion
+
+	{
+		'autocompletion': true,
+		'keywords': {...}
+	}
 
 If set to true, Sublime Text's autocompletion will be enabled for your highlighting scheme.
 
