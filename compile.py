@@ -99,6 +99,7 @@ class HighlightingScheme():
 		# resolve dependencies (depth-first)
 		if "include" in self.data:
 			inclusions = self.data["include"]
+			inclusions.reverse()
 			already_included = [themename]
 			while len(inclusions) > 0:
 				i = inclusions.pop()
@@ -112,7 +113,9 @@ class HighlightingScheme():
 					if entries is not None:
 						print "%s loaded." % (i + '.json')
 						if "include" in entries:
-							inclusions.extend(entries["include"])
+							to_include = entries["include"]
+							to_include.reverse()
+							inclusions.extend(to_include)
 						if "keywords" in entries:
 							new_keywords = entries["keywords"]
 							for key in new_keywords.keys():
