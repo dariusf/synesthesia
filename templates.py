@@ -34,12 +34,12 @@ new_file = """{
 }"""
 
 sample_file = """{
-
 	"include": ["lightmarkdown"],
+	"extensions": ["txt", "etc"],
 	"autocompletion": false,
 	"keywords": {
 		"hello world": "#ff0000",
-		"colours|colour aliases": "plum",
+		"(color|colour) aliases": "plum",
 		"options are supported too": {
 			"colour": "plum",
 			"background": "blue",

@@ -48,45 +48,46 @@ A map of options can be specified instead of a colour name or value:
 		'case-insensitive': true
 	}
 
-- 'colour' is optional
-- 'background' controls the background colour of highlighted keywords. It's used the same way 'colour' is.
-- 'whole-word' will make sure only whole occurrences of keywords are matched. If 'whole word' is set to true, the 'fun' in 'funeral' won't be coloured.
+- `colour` is optional
+- `background` controls the background colour of highlighted keywords. It's used the same way `colour` is.
+- `whole-word` will make sure only whole occurrences of keywords are matched. If set to true, the 'fun' in 'funeral' won't be coloured.
 
 ### Keywords
 
-Keywords are specified using [Oniguruma regular expressions](http://manual.macromates.com/en/regular_expressions). Don't worry if you aren't familiar with regexes; you don't need them to use this plugin (all alphanumeric strings are valid regexes, for example).
+Keywords are specified using [Oniguruma regular expressions](http://manual.macromates.com/en/regular_expressions). Don't worry if you aren't familiar with regexes: all alphanumeric strings are valid regexes, so you don't strictly *need* them to use this plugin.
 
 ### Mixins
 
-It can be cumbersome to manage a huge list of regexes and hexadecimal colours. Highlighting schemes can be mixed into others with the 'include' option, so you can easily separate and combine them:
+It can be cumbersome to manage a huge list of regexes and hexadecimal colours. Highlighting schemes can be mixed into others with the `include` option, so you can easily separate and combine them:
 
 	{
 		'include': ['LightMarkdown'],
 		'keywords': {...}
 	}
 
-This will cause the keywords in `LightMarkdown.json` to be copied into the current scheme.
+This will cause the keywords and colours in `LightMarkdown.json` to be copied into the current scheme.
 
-- Only the folder that the current scheme is in will be checked for the mixins specified.
+- The folder that the current scheme is in will first be checked for the mixins specified.
+- If a mixin can't be found there, `Packages/Synesthesia/include` will be checked next.
 - Dependencies will be resolved recursively. Circular depedenceies are guarded against.
-- Identical keywords in mixins will not override keywords of the current scheme.
+- Dependencies are loaded depth-first, in the order they are specified. If a keyword has appeared before, it won't be overridden should it appear again in a later-loaded dependency.
 
 ### Autocompletion
 
-If set to true, Sublime Text will display a list of completions on each keypress when your highlighting scheme is selected.
+If set to true, Sublime Text's autocompletion will be enabled for your highlighting scheme.
 
 ### Deleting Schemes
 
-To remove schemes, select **Delete Highlighting Scheme** from the Command Palette. You will be prompted for the name of the unwanted scheme.
+To remove schemes, select **Delete Highlighting Scheme** from the Command Palette, then enter the name of the unwanted scheme.
 
 ***Don't delete them manually***. Sublime Text will *complain* about that, and you might have to reinstall the package to fix the resulting errors.
 
 What should you use this plugin for?
 ------------------------------------
 
-- **Ad-hoc highlighting of text.** I appreciate the visual cues provided by syntax highlighting of code very much, and wanted to bring the concept to text-editing in general. This plugin is a lightweight and unobtrusive way to draw attention to important articles in your text, such as key terms, characters, or locations. I hope this makes writing (or text-editing in general) more fun for you!
-- **Simple markup languages.** You can see an example of this in `LightMarkdown.json`. It's not perfect, but it shows how you can easily define a colour theme for a [regular language](http://en.wikipedia.org/wiki/Chomsky_hierarchy).
-- *This plugin is not an easier way to specify programming language syntax.* That's the niche [AAAPackageDev](https://github.com/SublimeText/AAAPackageDev) fills.
+- **Ad-hoc highlighting of text.** I personally appreciate the visual cues provided by syntax highlighting of code very much and wanted to bring the concept to text-editing in general. This plugin is a lightweight and unobtrusive way to draw attention to important articles in your text, such as key terms, characters, or locations. I hope this makes writing (or text-editing in general) more fun for you!
+- **Highlighting simple markup languages.** You can see an example of this in `LightMarkdown.json`. It's not perfect, but it shows how you can easily define a colour theme for a [regular language](http://en.wikipedia.org/wiki/Chomsky_hierarchy).
+- *This plugin is not an easier way to specify syntax highlighting for a programming language.* That's the niche [AAAPackageDev](https://github.com/SublimeText/AAAPackageDev) fills.
 
 Inner Workings
 --------------
