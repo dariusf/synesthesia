@@ -1,5 +1,6 @@
 {
 	"comment:": "Try compiling this scheme, then using it to highlight this file!",
+	"extensions": ["pretty"],
 	"keywords": {
 		"#FFC0CB": "#FFC0CB",
 		"#FFB6C1": "#FFB6C1",
