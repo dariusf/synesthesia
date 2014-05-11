@@ -24,7 +24,7 @@ Functionality
 
 Most of the plugin's functionality is based on 'highlighting schemes' - JSON files with a list of keywords and the colours to highlight them with. The first step is to create such a file. Select **Sample Highlighting Scheme** from the Command Palette for an example that uses most of the plugin's features. You may also wish to browse the examples in `Synesthesia/include`.
 
-Once you're satisfied with your scheme, compile it. Synthesia will generate the configuration files necessary for Sublime Text to highlight everything.
+Once you're satisfied with your scheme, compile it. Synesthesia will generate the configuration files necessary for Sublime Text to highlight everything.
 
 ### Colours
 
@@ -48,7 +48,7 @@ A map of options can be specified instead of a colour name or value:
 		'case-insensitive': true
 	}
 
-- `colour` is optional
+- All fields are optional, including `colour`.
 - `background` controls the background colour of highlighted keywords. It's used the same way `colour` is.
 - `whole-word` will make sure only whole occurrences of keywords are matched. If set to true, the 'fun' in 'funeral' won't be coloured.
 
@@ -74,7 +74,7 @@ This will cause the keywords and colours in `LightMarkdown.json` to be copied in
 
 ### Extensions
 
-You can specify new extensions for your highlighting schemes under the `extensions` key.
+You can specify file extensions for your highlighting schemes under the `extensions` key. This is so they apply automatically when files of the type are opened.
 
 	{
 		'extensions': ['txt', 'etc'],
@@ -96,12 +96,12 @@ If set to true, Sublime Text's autocompletion will be enabled for your highlight
 
 To remove schemes, select **Delete Highlighting Scheme** from the Command Palette, then enter the name of the unwanted scheme.
 
-***Don't delete them manually***. Sublime Text will *complain* about that, and you might have to reinstall the package to fix the resulting errors.
+**Don't delete them manually**. Sublime Text *will* complain about that, and you might have to reinstall the package to fix the resulting errors.
 
 What should you use this plugin for?
 ------------------------------------
 
-- **Ad-hoc highlighting of text.** I personally appreciate the visual cues provided by syntax highlighting of code very much and wanted to bring the concept to text-editing in general. This plugin is a lightweight and unobtrusive way to draw attention to important articles in your text, such as key terms, characters, or locations. I hope this makes writing (or text-editing in general) more fun for you!
+- **Ad-hoc highlighting of text.** I personally appreciate the visual cues provided by syntax highlighting of code very much and wanted to bring the concept to text editing in general. This plugin is a lightweight and unobtrusive way to draw attention to important articles in your text, such as key terms, characters, or locations. I hope this makes writing more fun for you!
 - **Highlighting simple markup languages.** You can see an example of this in `LightMarkdown.json`. It's not perfect, but it shows how you can easily define a colour theme for a [regular language](http://en.wikipedia.org/wiki/Chomsky_hierarchy).
 - *This plugin is not an easier way to specify syntax highlighting for a programming language.* That's the niche [AAAPackageDev](https://github.com/SublimeText/AAAPackageDev) fills.
 
@@ -114,9 +114,14 @@ Compiling a highlighting scheme generates three files:
 - A colour theme
 - A settings file
 
-The first two work in tandem, specifying a mini-language consisting of the user's keywords, along with a colour theme designed specifically for that mini-language. The settings file glues them together, causing Sublime Text to associate the theme with the mini-language. All this is done via Sublime Text's built-in mechanisms for syntax highlighting, so it's robust and fairly stable.
+The first two work in tandem, specifying a mini-language consisting of the user's keywords, along with a colour theme designed specifically for that mini-language. The settings file glues them together, causing Sublime Text to associate the theme with the mini-language. All this is done via Sublime Text's built-in mechanisms for syntax highlighting, so it's robust and stable.
 
-Other plugins for highlighting arbitrary words do so either via named regions or by mutating the current colour theme: the first method doesn't interact well with live editing and is limited to only changing background colour, while the second provides a high level of flexibility but involves messing with colour theme files. The method used here, while slightly more static, is equally robust for live editing and much simpler to manage. It's the middle ground between all these approaches.
+Other plugins for highlighting arbitrary words do so either via named regions or by mutating the current colour theme.
+
+- The first method doesn't interact well with live editing and is limited to only changing the background colour of text.
+- The second provides a high level of flexibility but involves messing with colour theme files.
+
+The method used in this plugin, while slightly static, is great for live editing and is much simpler to manage. I see it as the middle ground between all these approaches.
 
 License
 --------
