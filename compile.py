@@ -1,7 +1,7 @@
 import re, uuid, os, json
 import sublime, sublime_plugin
-import templates
-import colours
+from . import templates
+from . import colours
 
 PATH_SEPARATOR = "\\" if sublime.platform() == "windows" else "/"
 
@@ -47,12 +47,12 @@ def load_json_data(filepath):
 	except ValueError:
 		sublime.status_message("%s.%s is not a valid JSON file." % (themename, ext))
 	except IOError:
-		print "%s.%s could not be loaded." % (themename, ext)
+		print("%s.%s could not be loaded." % (themename, ext))
 
 	return themename, entries
 
 class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
-    def run(self, cmd = []):
+	def run(self, cmd = []):
 
 		path = cmd[0] if len(cmd) > 0 else self.window.active_view().file_name()
 		filepath = os.path.abspath(path)
@@ -108,17 +108,17 @@ class HighlightingScheme():
 					already_included.append(i)
 					_, entries = load_json_data(os.path.join(self.directory, i + '.json'))
 					if entries is None:
-						print "Searching in Packages/Synesthesia/include..."
+						print("Searching in Packages/Synesthesia/include...")
 						_, entries = load_json_data(os.path.join(sublime.packages_path(), "Synesthesia", "include", i + '.json'))
 					if entries is not None:
-						print "%s loaded." % (i + '.json')
+						print("%s loaded." % (i + '.json'))
 						if "include" in entries:
 							to_include = entries["include"]
 							to_include.reverse()
 							inclusions.extend(to_include)
 						if "keywords" in entries:
 							new_keywords = entries["keywords"]
-							for key in new_keywords.keys():
+							for key in list(new_keywords.keys()):
 								# won't add colling names
 								if key not in keyword_map:
 									keyword_map[key] = new_keywords[key]
@@ -130,7 +130,7 @@ class HighlightingScheme():
 			return c
 
 		# generate syntax and theme files
-		for key in keyword_map.keys():
+		for key in list(keyword_map.keys()):
 			regex = key
 			value = keyword_map[key]
 
@@ -138,7 +138,7 @@ class HighlightingScheme():
 			case_insensitive = False
 			whole_word = False
 
-			if type(value) == str or type(value) == unicode:
+			if type(value) == str:
 				options.append(templates.theme_element_foreground % colour(value))
 			elif type(value) == dict:
 				fontstyle = []
@@ -183,9 +183,9 @@ class HighlightingScheme():
 		theme_filename = os.path.join(package_directory, themename + ".tmTheme")
 		settings_filename = os.path.join(package_directory, themename + ".sublime-settings")
 		write_file(scope_filename, templates.scope % (scope_extensions, themename, keywords, "source" if autocompletion else "text", themename, uuid.uuid4()))
-		print "Written to %s." % scope_filename
+		print("Written to %s." % scope_filename)
 		write_file(theme_filename, templates.theme % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
-		print "Written to %s." % theme_filename
+		print("Written to %s." % theme_filename)
 		write_file(settings_filename, templates.default_settings % (themename, settings_extensions))
-		print "Written to %s." % settings_filename
+		print("Written to %s." % settings_filename)
 		sublime.status_message("Highlighting scheme %s generated." % themename)
