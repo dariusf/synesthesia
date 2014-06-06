@@ -18,7 +18,7 @@ class SynesthesiaDeleteCommand(sublime_plugin.WindowCommand):
 				v.set_syntax_file("%s/Text/Plain text.tmLanguage" % sublime.packages_path())
 
 		# delete the files
-		package_directory = os.path.join(sublime.packages_path(), "Synesthesia")
+		package_directory = os.path.join(sublime.packages_path(), "synesthesia")
 		files = ["%s.sublime-settings", "%s.tmLanguage", "%s.tmLanguage.cache", "%s.tmTheme", "%s.tmTheme.cache"]
 		files_deleted = False
 
@@ -28,7 +28,7 @@ class SynesthesiaDeleteCommand(sublime_plugin.WindowCommand):
 				os.remove(filepath)
 				files_deleted = True
 			else:
-				print "File not found; can't be deleted: %s" % filepath
+				print("File not found; can't be deleted: %s" % filepath)
 
 		if files_deleted:
 			sublime.status_message("Highlighting scheme %s removed." % which)

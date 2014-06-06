@@ -108,8 +108,8 @@ class HighlightingScheme():
 					already_included.append(i)
 					_, entries = load_json_data(os.path.join(self.directory, i + '.json'))
 					if entries is None:
-						print("Searching in Packages/Synesthesia/include...")
-						_, entries = load_json_data(os.path.join(sublime.packages_path(), "Synesthesia", "include", i + '.json'))
+						print("Searching in Packages/synesthesia/include...")
+						_, entries = load_json_data(os.path.join(sublime.packages_path(), "synesthesia", "include", i + '.json'))
 					if entries is not None:
 						print("%s loaded." % (i + '.json'))
 						if "include" in entries:
@@ -178,11 +178,12 @@ class HighlightingScheme():
 		settings_extensions = ', '.join([(templates.additional_settings_extension % x) for x in extensions])
 
 		# produce output files
-		package_directory = os.path.join(sublime.packages_path(), "Synesthesia")
+		package_directory = os.path.join(sublime.packages_path(), "synesthesia")
 		scope_filename = os.path.join(package_directory, themename + ".tmLanguage")
 		theme_filename = os.path.join(package_directory, themename + ".tmTheme")
 		settings_filename = os.path.join(package_directory, themename + ".sublime-settings")
 		write_file(scope_filename, templates.scope % (scope_extensions, themename, keywords, "source" if autocompletion else "text", themename, uuid.uuid4()))
+		print(os.path.dirname(os.path.realpath(__file__)))
 		print("Written to %s." % scope_filename)
 		write_file(theme_filename, templates.theme % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
 		print("Written to %s." % theme_filename)

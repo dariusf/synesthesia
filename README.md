@@ -1,13 +1,13 @@
 Synesthesia
 ===========
 
-A plugin for Sublime Text 2 for highlighting text with pretty colours.
+A plugin for Sublime Text 2/3 for highlighting text with pretty colours.
 
 Installation
 ------------
 
 - The easiest way is through Package Control (`Shift+Ctrl+P` > Install Package > Synesthesia).
-- Alternatively, clone this repository into `Packages/Synesthesia`.
+- Alternatively, clone this repository into `Packages/synesthesia`.
 
 Getting Started
 ---------------
@@ -22,7 +22,7 @@ Getting Started
 Functionality
 -------------
 
-Most of the plugin's functionality is based on 'highlighting schemes' - JSON files with a list of keywords and the colours to highlight them with. The first step is to create such a file. Select **Sample Highlighting Scheme** from the Command Palette for an example that uses most of the plugin's features. You may also wish to browse the examples in `Synesthesia/include`.
+Most of the plugin's functionality is based on 'highlighting schemes' - JSON files with a list of keywords and the colours to highlight them with. The first step is to create such a file. Select **Sample Highlighting Scheme** from the Command Palette for an example that uses most of the plugin's features. You may also wish to browse the examples in `synesthesia/include`.
 
 Once you're satisfied with your scheme, compile it. Synesthesia will generate the configuration files necessary for Sublime Text to highlight everything.
 
@@ -68,7 +68,7 @@ It can be cumbersome to manage a huge list of regexes and hexadecimal colours. H
 This will cause the keywords and colours in `LightMarkdown.json` to be copied into the current scheme.
 
 - The folder that the current scheme is in will first be checked for the mixins specified.
-- If a mixin can't be found there, `Packages/Synesthesia/include` will be checked next.
+- If a mixin can't be found there, `Packages/synesthesia/include` will be checked next.
 - Dependencies will be resolved recursively. Circular depedenceies are guarded against.
 - Dependencies are loaded depth-first, in the order they are specified. If a keyword has appeared before, it won't be overridden should it appear again in a later-loaded dependency.
 

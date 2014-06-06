@@ -131,7 +131,7 @@ theme_element_background = """
 additional_settings_extension = "\"%s\""
 
 default_settings = """{
-	"color_scheme": "Packages/Synesthesia/%s.tmTheme",
+	"color_scheme": "Packages/synesthesia/%s.tmTheme",
 	"extensions": [%s]
 }
 """
