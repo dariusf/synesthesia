@@ -108,7 +108,7 @@ If set to true, Sublime Text's autocompletion will be enabled for your highlight
 
 ### Removing Schemes
 
-To remove schemes, select **Remove Highlighting Scheme** from the Command Palette, then enter the name of the unwanted scheme.
+To remove schemes, select **Remove Highlighting Scheme** from the Command Palette.
 
 **Don't delete the files manually**. Sublime Text will complain about that, and you might have to reinstall the package to fix the resulting errors.
 
