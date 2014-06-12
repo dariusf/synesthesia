@@ -42,6 +42,23 @@ def prettify(r, g, b):
 
 	return r, g, b
 
+def uglify(r, g, b):
+	h, s, v = colorsys.rgb_to_hsv(r/255, g/255, b/255)
+
+	# Rescale values into the following ranges:
+
+	# Hue: [0, 360]
+	# Saturation: [0, 20]
+	# Brightness: [0, 67]
+
+	s = rescale(s, 0, 0.2)
+	v = rescale(v, 0, 0.67)
+
+	r, g, b = colorsys.hsv_to_rgb(h, s, v)
+	r, g, b = r*255, g*255, b*255
+
+	return r, g, b
+
 def random_colour():
 	r = random.randrange(0, 256)
 	g = random.randrange(0, 256)
@@ -59,5 +76,16 @@ def string_to_colour(s):
 	b = (h >> 16) & 0xFF
 
 	r, g, b = prettify(r, g, b)
+
+	return rgb_to_string(r, g, b)
+
+def string_to_dark_colour(s):
+	h = int(hashlib.sha1(s.encode('utf-8')).hexdigest(), 16)
+
+	r = h & 0xFF
+	g = (h >> 8) & 0xFF
+	b = (h >> 16) & 0xFF
+
+	r, g, b = uglify(r, g, b)
 
 	return rgb_to_string(r, g, b)

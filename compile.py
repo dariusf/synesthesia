@@ -2,7 +2,7 @@ import re, uuid, os, json
 import sublime, sublime_plugin
 from . import templates
 from . import colours
-from .colourful import string_to_colour, random_colour
+from .colourful import string_to_colour, random_colour, string_to_dark_colour
 
 PATH_SEPARATOR = "\\" if sublime.platform() == "windows" else "/"
 
@@ -124,11 +124,13 @@ class HighlightingScheme():
 								if key not in keyword_map:
 									keyword_map[key] = new_keywords[key]
 
-		def colour(key, c, auto=True):
+		def colour(key, c, dark=False):
 			c = c.lower()
-			if c == "random":
+			if dark and c == "auto":
+				c = string_to_dark_colour(key)
+			elif c == "random":
 				c = random_colour()
-			elif auto and c == "auto":
+			elif c == "auto":
 				c = string_to_colour(key)
 			elif c in colours.name_to_hex:
 				c = colours.name_to_hex[c]
@@ -150,7 +152,7 @@ class HighlightingScheme():
 				if "colour" in value:
 					options.append(templates.theme_element_foreground % colour(key, value["colour"]))
 				if "background" in value:
-					options.append(templates.theme_element_background % colour(key, value["background"], False))
+					options.append(templates.theme_element_background % colour(key, value["background"], True))
 				if "italics" in value and value["italics"]:
 					fontstyle.append("italic")
 				if "bold" in value and value["bold"]:
