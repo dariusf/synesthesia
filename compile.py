@@ -92,8 +92,9 @@ class HighlightingScheme():
 		autocompletion = "autocompletion" in self.data and self.data["autocompletion"]
 		keywords = []
 		theme_scopes = []
-		keyword_map = self.data["keywords"]
+		keyword_map = "keywords" in self.data and self.data["keywords"] or {}
 		count = 0
+		auto_keywords_list = "auto_keywords" in self.data and self.data["auto_keywords"] or []
 
 		extensions = "extensions" in self.data and self.data["extensions"] or ["txt"]
 
@@ -135,6 +136,11 @@ class HighlightingScheme():
 			elif c in colours.name_to_hex:
 				c = colours.name_to_hex[c]
 			return c
+
+		# turn auto keywords into actual keywords
+		for keyword in auto_keywords_list:
+			if keyword not in keyword_map:
+				keyword_map[keyword] = "auto"
 
 		# generate syntax and theme files
 		for key in list(keyword_map.keys()):
