@@ -30,23 +30,31 @@ Once you're satisfied with your scheme, compile it. Synesthesia will generate th
 
 Keyword colours are specified as RGB in hexadecimal form (`#rrggbb`). You can also use colour names, like `blue` or `red`; a list of these can be found [here](http://en.wikipedia.org/wiki/Web_colours#X11_color_names).
 
-	'keywords': {
-		'hello': '#0CBDE8',
-		'world': 'dodgerblue'
-	}
+Two additional colour types are available: `random` and `auto`. `random` will give a random colour on every compile, while the colour that `auto` generates is fixed. Both will only generate bright, aesthetically-pleasing colours.
+
+```js
+'keywords': {
+	'hello': '#0CBDE8',
+	'world': 'dodgerblue',
+	'lazy?': 'random',
+	'no problem!': 'auto'
+}
+```
 
 ### Formatting and Options
 
 A map of options can be specified instead of a colour name or value:
 
-	'a keyword': {
-		'colour': 'plum',
-		'background': 'blue',
-		'bold': true,
-		'italics': true,
-		'whole-word': true,
-		'case-insensitive': true
-	}
+```js
+'a keyword': {
+	'colour': 'plum',
+	'background': 'blue',
+	'bold': true,
+	'italics': true,
+	'whole-word': true,
+	'case-insensitive': true
+}
+```
 
 - All fields are optional, including `colour`.
 - `background` controls the background colour of highlighted keywords. It's used the same way `colour` is.
@@ -60,10 +68,12 @@ Keywords are specified using [Oniguruma regular expressions](http://manual.macro
 
 It can be cumbersome to manage a huge list of regexes and hexadecimal colours. Highlighting schemes can be mixed into others with the `include` option, so you can easily separate and combine them:
 
-	{
-		'include': ['Emphasis'],
-		'keywords': {...}
-	}
+```js
+{
+	'include': ['Emphasis'],
+	'keywords': {...}
+}
+```
 
 This will cause the keywords and colours in `Emphasis.json` to be copied into the current scheme.
 
@@ -76,19 +86,23 @@ This will cause the keywords and colours in `Emphasis.json` to be copied into th
 
 You can specify file extensions for your highlighting schemes under the `extensions` key. This is so they apply automatically when files of the type are opened.
 
-	{
-		'extensions': ['txt', 'etc'],
-		'keywords': {...}
-	}
+```js
+{
+	'extensions': ['txt', 'etc'],
+	'keywords': {...}
+}
+```
 
 `txt` will be used by default if you don't specify anything.
 
 ### Autocompletion
 
-	{
-		'autocompletion': true,
-		'keywords': {...}
-	}
+```js
+{
+	'autocompletion': true,
+	'keywords': {...}
+}
+```
 
 If set to true, Sublime Text's autocompletion will be enabled for your highlighting scheme.
 

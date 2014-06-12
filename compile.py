@@ -2,6 +2,7 @@ import re, uuid, os, json
 import sublime, sublime_plugin
 from . import templates
 from . import colours
+from .colourful import string_to_colour, random_colour
 
 PATH_SEPARATOR = "\\" if sublime.platform() == "windows" else "/"
 
@@ -123,9 +124,13 @@ class HighlightingScheme():
 								if key not in keyword_map:
 									keyword_map[key] = new_keywords[key]
 
-		def colour(c):
+		def colour(key, c, auto=True):
 			c = c.lower()
-			if c in colours.name_to_hex:
+			if c == "random":
+				c = random_colour()
+			elif auto and c == "auto":
+				c = string_to_colour(key)
+			elif c in colours.name_to_hex:
 				c = colours.name_to_hex[c]
 			return c
 
@@ -139,13 +144,13 @@ class HighlightingScheme():
 			whole_word = False
 
 			if type(value) == str:
-				options.append(templates.theme_element_foreground % colour(value))
+				options.append(templates.theme_element_foreground % colour(key, value))
 			elif type(value) == dict:
 				fontstyle = []
 				if "colour" in value:
-					options.append(templates.theme_element_foreground % colour(value["colour"]))
+					options.append(templates.theme_element_foreground % colour(key, value["colour"]))
 				if "background" in value:
-					options.append(templates.theme_element_background % colour(value["background"]))
+					options.append(templates.theme_element_background % colour(key, value["background"], False))
 				if "italics" in value and value["italics"]:
 					fontstyle.append("italic")
 				if "bold" in value and value["bold"]:
