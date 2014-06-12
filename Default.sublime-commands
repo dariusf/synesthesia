@@ -1,6 +1,6 @@
 [
     {
-        "caption": "Synesthesia: Delete Highlighting Scheme",
+        "caption": "Synesthesia: Remove Highlighting Scheme",
         "command": "synesthesia_delete",
         "args": {}
     },
