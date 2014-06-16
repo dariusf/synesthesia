@@ -106,6 +106,19 @@ You can specify file extensions for your highlighting schemes under the `extensi
 
 If set to true, Sublime Text's autocompletion will be enabled for your highlighting scheme.
 
+### Other Settings
+
+```js
+{
+	'keywords': {...},
+	'settings': {
+		'font_face': 'Sans'
+	}
+}
+```
+
+Other settings for your scheme go under this key. These will be copied directly into the generated `sublime-settings` file and used by Sublime.
+
 ### Removing Schemes
 
 To remove schemes, select **Remove Highlighting Scheme** from the Command Palette.

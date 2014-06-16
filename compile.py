@@ -93,6 +93,7 @@ class HighlightingScheme():
 		keywords = []
 		theme_scopes = []
 		keyword_map = "keywords" in self.data and self.data["keywords"] or {}
+		settings_map = "settings" in self.data and self.data["settings"] or {}
 		count = 0
 		auto_keywords_list = "auto_keywords" in self.data and self.data["auto_keywords"] or []
 
@@ -113,7 +114,7 @@ class HighlightingScheme():
 						print("Searching in Packages/synesthesia/include...")
 						_, entries = load_json_data(os.path.join(sublime.packages_path(), "synesthesia", "include", i + '.json'))
 					if entries is not None:
-						print("%s loaded." % (i + '.json'))
+						print("%s included." % (i + '.json'))
 						if "include" in entries:
 							to_include = entries["include"]
 							to_include.reverse()
@@ -189,6 +190,7 @@ class HighlightingScheme():
 		theme_scopes = ''.join(theme_scopes)
 		scope_extensions = ''.join([(templates.additional_extension % x) for x in extensions])
 		settings_extensions = ', '.join([(templates.additional_settings_extension % x) for x in extensions])
+		other_settings = ''.join([templates.other_settings % (key, settings_map[key]) for key in list(settings_map.keys())])
 
 		# produce output files
 		package_directory = os.path.join(sublime.packages_path(), "synesthesia")
@@ -200,6 +202,6 @@ class HighlightingScheme():
 		print("Written to %s." % scope_filename)
 		write_file(theme_filename, templates.theme % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
 		print("Written to %s." % theme_filename)
-		write_file(settings_filename, templates.default_settings % (themename, settings_extensions))
+		write_file(settings_filename, templates.default_settings % (themename, settings_extensions, other_settings))
 		print("Written to %s." % settings_filename)
 		sublime.status_message("Highlighting scheme %s generated." % themename)

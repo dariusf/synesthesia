@@ -132,6 +132,9 @@ additional_settings_extension = "\"%s\""
 
 default_settings = """{
 	"color_scheme": "Packages/synesthesia/%s.tmTheme",
-	"extensions": [%s]
+	"extensions": [%s]%s
 }
 """
+
+other_settings = """,
+	\"%s\": \"%s\""""
