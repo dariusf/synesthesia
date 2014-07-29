@@ -194,6 +194,11 @@ class HighlightingScheme():
 
 		# produce output files
 		package_directory = os.path.join(sublime.packages_path(), "synesthesia")
+
+		if not os.path.exists(package_directory):
+			print("%s does not exist; created" % package_directory)
+			os.makedirs(package_directory)
+
 		scope_filename = os.path.join(package_directory, themename + ".tmLanguage")
 		theme_filename = os.path.join(package_directory, themename + ".tmTheme")
 		settings_filename = os.path.join(package_directory, themename + ".sublime-settings")
