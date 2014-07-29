@@ -9,7 +9,7 @@ class SynesthesiaDeleteCommand(sublime_plugin.WindowCommand):
 	def run(self):
 		window = self.window
 
-		# find .tmLanguage files
+		# Find .tmLanguage files
 		directory = os.path.join(sublime.packages_path(), "synesthesia")
 		files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
 		files = sorted([f for f in files if f.endswith('.tmLanguage')])
@@ -20,13 +20,13 @@ class SynesthesiaDeleteCommand(sublime_plugin.WindowCommand):
 				nonlocal without_extensions
 				which = without_extensions[which]
 
-				# check if open views are using the syntax file that i'm going to delete
+				# Check if open views are using the syntax file that is going to be deleted
 				for v in self.window.views():
 					current_def = extract_syntax_name(v.settings().get('syntax'))
 					if (current_def.lower() == which):
-						v.set_syntax_file("%s/Text/Plain text.tmLanguage" % sublime.packages_path())
+						v.set_syntax_file("Packages/Text/Plain text.tmLanguage")
 
-				# delete the files
+				# Delete the files
 				package_directory = os.path.join(sublime.packages_path(), "synesthesia")
 				files = ["%s.sublime-settings", "%s.tmLanguage", "%s.tmLanguage.cache", "%s.tmTheme", "%s.tmTheme.cache"]
 				files_deleted = False
