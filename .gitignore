@@ -4,3 +4,4 @@
 *.tmTheme
 *.cache
 notes
+.DS_Store
