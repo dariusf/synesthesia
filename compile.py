@@ -52,6 +52,18 @@ def load_json_data(filepath):
 
 	return themename, entries
 
+def colour(key, c, dark=False):
+	c = c.lower()
+	if dark and c == "auto":
+		c = string_to_dark_colour(key)
+	elif c == "random":
+		c = random_colour()
+	elif c == "auto":
+		c = string_to_colour(key)
+	elif c in colours.name_to_hex:
+		c = colours.name_to_hex[c]
+	return c
+
 class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
 	def run(self, cmd = []):
 
@@ -122,21 +134,9 @@ class HighlightingScheme():
 						if "keywords" in entries:
 							new_keywords = entries["keywords"]
 							for key in list(new_keywords.keys()):
-								# won't add colling names
+								# won't add colliding names
 								if key not in keyword_map:
 									keyword_map[key] = new_keywords[key]
-
-		def colour(key, c, dark=False):
-			c = c.lower()
-			if dark and c == "auto":
-				c = string_to_dark_colour(key)
-			elif c == "random":
-				c = random_colour()
-			elif c == "auto":
-				c = string_to_colour(key)
-			elif c in colours.name_to_hex:
-				c = colours.name_to_hex[c]
-			return c
 
 		# turn auto keywords into actual keywords
 		for keyword in auto_keywords_list:
@@ -144,6 +144,15 @@ class HighlightingScheme():
 				keyword_map[keyword] = "auto"
 
 		# generate syntax and theme files
+		if "deriving" in self.data:
+			self.generate_derived_files()
+		else:
+			self.generate_non_derived_files(autocompletion, themename, settings_map, extensions, theme_scopes, keywords, keyword_map, count)
+
+	def generate_derived_files(self):
+		pass
+
+	def generate_non_derived_files(self, autocompletion, themename, settings_map, extensions, theme_scopes, keywords, keyword_map, count):
 		for key in list(keyword_map.keys()):
 			regex = key
 			value = keyword_map[key]
@@ -187,6 +196,8 @@ class HighlightingScheme():
 			theme_scopes.append(templates.theme_element % (keyname, keyname, ''.join(options)))
 
 		keywords = ''.join(keywords)
+		# print(keywords)
+		# keywords = xml strings containing all the data already
 		theme_scopes = ''.join(theme_scopes)
 		scope_extensions = ''.join([(templates.additional_extension % x) for x in extensions])
 		settings_extensions = ', '.join([(templates.additional_settings_extension % x) for x in extensions])
@@ -194,7 +205,6 @@ class HighlightingScheme():
 
 		# produce output files
 		package_directory = os.path.join(sublime.packages_path(), "synesthesia")
-
 		if not os.path.exists(package_directory):
 			print("%s does not exist; created" % package_directory)
 			os.makedirs(package_directory)
@@ -203,7 +213,7 @@ class HighlightingScheme():
 		theme_filename = os.path.join(package_directory, themename + ".tmTheme")
 		settings_filename = os.path.join(package_directory, themename + ".sublime-settings")
 		write_file(scope_filename, templates.scope % (scope_extensions, themename, keywords, "source" if autocompletion else "text", themename, uuid.uuid4()))
-		print(os.path.dirname(os.path.realpath(__file__)))
+		# print(os.path.dirname(os.path.realpath(__file__)))
 		print("Written to %s." % scope_filename)
 		write_file(theme_filename, templates.theme % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
 		print("Written to %s." % theme_filename)
