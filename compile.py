@@ -64,6 +64,20 @@ def colour(key, c, dark=False):
 		c = colours.name_to_hex[c]
 	return c
 
+def process_tmLanguage(scheme_name):
+	path = strip(sublime.packages_path()) + "Markdown.tmLanguage"
+	a = plistlib.readPlist(path)
+
+	a['name'] = scheme_name
+	a['scopeName'] += '.' + scheme_name
+
+	a['repository']['TLP'] = {'match': '[Aa]thena', 'name': 'meta.other.TLP.Aathena_1'}
+	a['repository']['Thor'] = {'match': '[Tt]hor', 'name': 'meta.other.TLP.Tthor_2'}
+	a['repository']['inline']['patterns'].append({'include': '#TLP'})
+	a['repository']['inline']['patterns'].append({'include': '#Thor'})
+
+	plistlib.writePlist(a, re.sub('.tmLanguage', '2.tmLanguage', path))
+
 class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
 	def run(self, cmd = []):
 
@@ -83,6 +97,45 @@ class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
 
 		hs.save(themename)
 
+class Keyword():
+	count = 0
+
+	def __init__(self, regex, value):
+
+		self.colour = None
+		self.background_colour = None
+		self.fontstyle = []
+		self.whole_word = False # do i really need this after modifying the regex?
+		self.case_insensitive = False # same for this one
+		self.keyname = strip_non_alpha(regex)
+
+		if type(value) == str:
+			self.colour = colour(regex, value)
+		elif type(value) == dict:
+			if "colour" in value:
+				self.colour = colour(regex, value["colour"])
+			if "background" in value:
+				self.background_colour = colour(key, value["background"], True)
+			if "italics" in value and value["italics"]:
+				self.fontstyle.append("italic")
+			if "bold" in value and value["bold"]:
+				self.fontstyle.append("bold")
+			if "whole-word" in value and value["whole-word"]:
+				self.whole_word = True
+			if "case-insensitive" in value and value["case-insensitive"]:
+				self.case_insensitive = True
+
+		# Post-processing of regex
+
+		if self.whole_word or self.keyname == regex:
+			# regex is completely alphabetical;
+			# automatically enforce word boundary
+			self.regex = "\\b%s\\b" % regex
+		if self.case_insensitive:
+			self.regex = "(?i:%s)" % regex
+		self.keyname = "%s_%d" % (self.keyname, Keyword.count)
+		Keyword.count += 1
+
 class HighlightingScheme():
 	"""
 	A highlighting scheme consists of:
@@ -99,7 +152,7 @@ class HighlightingScheme():
 		self.directory = directory
 		self.data = data
 
-	def save(self, themename):
+	def save(self, theme_name):
 		# initialization
 		autocompletion = "autocompletion" in self.data and self.data["autocompletion"]
 		keywords = []
@@ -115,7 +168,7 @@ class HighlightingScheme():
 		if "include" in self.data:
 			inclusions = self.data["include"]
 			inclusions.reverse()
-			already_included = [themename]
+			already_included = [theme_name]
 			while len(inclusions) > 0:
 				i = inclusions.pop()
 				# prevents recursive dependency, since it only looks in the same directory
@@ -145,12 +198,32 @@ class HighlightingScheme():
 
 		# generate syntax and theme files
 		if "deriving" in self.data:
-			self.generate_derived_files()
+			self.generate_derived_files(theme_name, keyword_map)
 		else:
 			self.generate_non_derived_files(autocompletion, themename, settings_map, extensions, theme_scopes, keywords, keyword_map, count)
 
-	def generate_derived_files(self):
-		pass
+	def generate_derived_files(self, theme_name, keyword_map):
+		# Check inputs, format them correctly if present
+		for required_key in ["tmLanguage", "tmTheme", "sublime-settings"]:
+			if required_key not in self.data["deriving"]:
+				print("Missing %s key in 'deriving' field!" % (required_key))
+				return
+			else:
+				self.data["deriving"][required_key] += "." + required_key
+
+		# TODO search places other than the package directory
+		derived_theme_path = os.path.join(sublime.packages_path(), self.data["deriving"]["tmTheme"])
+		derived_language_path = os.path.join(sublime.packages_path(), self.data["deriving"]["tmLanguage"])
+		derived_settings_path = os.path.join(sublime.packages_path(), self.data["deriving"]["sublime-settings"])
+
+		# collect information from data structures
+		keywords = [Keyword(regex, value) for (regex, value) in keyword_map.items()]
+		process_tmLanguage(theme_name, derived_language_path, keywords)
+		print(keywords)
+		print('done writing tmLanguage')
+
+		print(derived_theme_path)
+		# print(read_file(derived_theme))
 
 	def generate_non_derived_files(self, autocompletion, themename, settings_map, extensions, theme_scopes, keywords, keyword_map, count):
 		for key in list(keyword_map.keys()):
