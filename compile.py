@@ -248,13 +248,15 @@ class HighlightingScheme():
             self.generate_non_derived_files(autocompletion, themename, settings_map, extensions, theme_scopes, keywords, keyword_map, count)
 
     def generate_derived_files(self, theme_name, keyword_map, settings_map):
-        # Check inputs, format them correctly if present
-        for required_key in ["tmLanguage", "tmTheme", "sublime-settings"]:
+        # Check inputs are present
+        for required_key in ["tmLanguage", "tmTheme", "sublime-settings", "tmLanguage_scope"]:
             if required_key not in self.data["deriving"]:
                 print("Missing %s key in 'deriving' field!" % (required_key))
                 return
-            else:
-                self.data["deriving"][required_key] += "." + required_key
+
+        # Format file names correctly
+        for file_name_key in ["tmLanguage", "tmTheme", "sublime-settings"]:
+            self.data["deriving"][file_name_key] += "." + file_name_key
 
         # TODO search places other than the package directory
         derived_theme_path = os.path.join(PACKAGES_PATH, self.data["deriving"]["tmTheme"])
