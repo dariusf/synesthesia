@@ -92,7 +92,7 @@ This will cause the keywords and colours in `LightMarkdown.json` to be copied in
 
 Here's how Synesthesia will search for schemes to mix in:
 
-- The folder that the current scheme is in will first be checked for the mixins specified.
+- The directory that the current scheme is in will first be checked for the mixins specified.
 - If a mixin can't be found there, `Packages/synesthesia/include` will be checked next.
 - Dependencies will be resolved recursively, depth-first, in the order they are specified. Circular dependencies are prevented.
 - If a keyword has appeared before, it won't be overridden should it appear again in a later-loaded dependency.
@@ -142,14 +142,55 @@ To remove highlighting schemes, select **Remove Highlighting Scheme** from the C
 
 **Don't delete the files manually**. Sublime Text will complain about that, and you might have to reinstall the package to fix the resulting errors.
 
+### Reusing Existing Language Definitions
+
+Creating new language definitions for our highlighting schemes keeps things cleanly separated, but sometimes that's not what we want. For example, you might want to have regular JavaScript syntax highlighting and just highlight `// TODO`-style comments in a different colour. Maybe you use this plugin for writing and would like all the features of [MarkdownEditing](https://github.com/SublimeText-Markdown/MarkdownEditing)'s awesome langauge definition together with your highlighted words.
+
+The `deriving` option handles these cases.
+
+This section is a little more involved. It may be helpful to give these articles on how [language grammars](https://manual.macromates.com/en/language_grammars), [scopes](http://blog.macromates.com/2005/introduction-to-scopes/), and [scope selectors](https://manual.macromates.com/en/scope_selectors.html) work in TextMate/Sublime a quick read.
+
+`deriving` allows us to *extend* an existing language definition; instead of generating a new language, we're going to open the existing one and just drop our additions inside.
+
+```js
+{
+    "deriving": {
+        "tmLanguage": "Markdown",
+        "tmTheme": "MarkdownEditor-Dark",
+        "sublime-settings": "Markdown",
+        "tmLanguage_scope": "repository.inline"
+    },
+    "keywords": {
+    	...
+    }
+}
+```
+
+Here's an example using the MarkdownEditing language definition. All fields are required.
+
+First we must get hold of three files from the package:
+
+- Language definition (`.tmLanguage`)
+- Colour theme (`.tmTheme`)
+- Settings (`.sublime-settings`)
+
+These are the files we will extend. They will be searched for in the directory that the current scheme is in, then `Packages/synesthesia`.
+
+To locate them you may have to [look inside your `.sublime-package` files](http://www.sublimetext.com/docs/3/packages.html).
+
+`deriving` will insert the new keywords under the [`repository`](https://manual.macromates.com/en/language_grammars) of the existing `tmLanguage` file; this way they can be easily referenced and used throughout it.
+
+Finally, it will make the existing language definition aware of the additions by inserting references to them into the appropriate places. In this case that's `repository.inline` (this is nonstandard notation, as it denotes a path in the `tmTheme` file rather than a scope). `inline` is the scope for all of the inline text you see in Markdown documents, so that's where our additions will surface. You might have to poke around the `.tmTheme` file to figure out the best or most general location for this. This differs between language definitions so it unfortunately cannot be done automatically.
+
 What should you use this plugin for?
 ------------------------------------
 
 - **Ad-hoc highlighting of text.** This plugin is a quick and lightweight way to draw attention to important articles in your text. A few example uses:
 	+ Highlighting keywords in log files
 	+ Drawing attention to characters or locations in writing
-	+ Visualising colours quickly
+	+ Visualising colours (check out `Pretty.json`)
 	+ Lightweight markup (check out [MarkdownEditing](https://github.com/SublimeText-Markdown/MarkdownEditing) for Markdown)
+	+ Quick-and-dirty way to add keywords to existing language definitions
 - *This plugin is not an easier way to specify syntax highlighting for a programming language.* A list of regular expressions isn't a great way to handle most programming languages. Making syntax highlighting easier is the niche [AAAPackageDev](https://github.com/SublimeText/AAAPackageDev) fills.
 
 Inner Workings
@@ -157,9 +198,9 @@ Inner Workings
 
 Compiling a highlighting scheme generates three files:
 
-- Language definition (.tmLanguage)
-- Colour theme (.tmTheme)
-- Settings (.sublime-settings)
+- Language definition (`.tmLanguage`)
+- Colour theme (`.tmTheme`)
+- Settings (`.sublime-settings`)
 
 The first two work in tandem, specifying a mini-language consisting of the user's keywords, along with a colour theme designed specifically for that mini-language. The settings file glues them together, causing Sublime Text to associate the theme with the mini-language. All this is done via Sublime Text's built-in mechanisms for syntax highlighting, so it's robust and stable.
 
