@@ -126,7 +126,7 @@ class Keyword():
         self.name = "%s_%d" % (self.name, Keyword.count)
         Keyword.count += 1
 
-def process_tmLanguage(scheme_name, path, keywords):
+def process_tmLanguage(scheme_name, path, keywords, insertion_scope):
     plist = plistlib.readPlist(path)
 
     plist['name'] = scheme_name
@@ -138,7 +138,11 @@ def process_tmLanguage(scheme_name, path, keywords):
             'match': keyword.regex,
             'name': 'meta.other.%s.%s' % (scheme_name, keyword.name)
         }
-        plist['repository']['inline']['patterns'].append({
+        # insert under the desired scope
+        insertion_point = plist
+        for scope in insertion_scope.split(r'.'):
+            insertion_point = insertion_point[scope]
+        insertion_point.append({
             'include': '#%s' % (keyword.name)
         })
 
@@ -260,12 +264,9 @@ class HighlightingScheme():
         # collect information from data structures
         keywords = [Keyword(regex, value) for (regex, value) in keyword_map.items()]
 
-        process_tmLanguage(theme_name, derived_language_path, keywords)
+        process_tmLanguage(theme_name, derived_language_path, keywords, self.data["deriving"]["tmLanguage_scope"])
         process_tmTheme(theme_name, derived_theme_path, keywords)
         process_sublime_settings(theme_name, derived_settings_path, settings_map)
-
-        # print(derived_theme_path)
-        # print(read_file(derived_theme))
 
     def generate_non_derived_files(self, autocompletion, themename, settings_map, extensions, theme_scopes, keywords, keyword_map, count):
         for key in list(keyword_map.keys()):
