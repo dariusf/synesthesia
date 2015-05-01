@@ -132,16 +132,27 @@ def process_tmLanguage(scheme_name, path, keywords, insertion_scope):
     plist['name'] = scheme_name
     plist['scopeName'] += '.' + scheme_name
 
+    # Locate the scope to make insertions in
+    insertion_point = plist
+    for scope in insertion_scope.split(r'.'):
+        if scope not in insertion_point:
+            print("Could not find scope %s from specified insertion scope %s!" % (scope, insertion_scope))
+            print("tmLanguage not generated")
+            return
+        insertion_point = insertion_point[scope]
+    if "patterns" not in insertion_point:
+        print("Could not find key 'patterns' in specified insertion scope %s!" % (insertion_scope))
+        print("tmLanguage not generated")
+        return
+    else:
+        insertion_point = insertion_point["patterns"]
+
     # TODO other features, font, etc.
     for keyword in keywords:
         plist['repository'][keyword.name] = {
             'match': keyword.regex,
             'name': 'meta.other.%s.%s' % (scheme_name, keyword.name)
         }
-        # insert under the desired scope
-        insertion_point = plist
-        for scope in insertion_scope.split(r'.'):
-            insertion_point = insertion_point[scope]
         insertion_point.append({
             'include': '#%s' % (keyword.name)
         })
