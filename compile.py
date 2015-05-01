@@ -207,7 +207,7 @@ class HighlightingScheme():
         count = 0
         auto_keywords_list = "auto_keywords" in self.data and self.data["auto_keywords"] or []
 
-        extensions = "extensions" in self.data and self.data["extensions"] or ["txt"]
+        extensions = "extensions" in self.data and self.data["extensions"] or ["txt", "md"]
 
         # resolve dependencies (depth-first)
         if "include" in self.data:
