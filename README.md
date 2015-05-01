@@ -29,6 +29,17 @@ This is essentially an abstraction for creating a language definition, but much 
 
 The rest of this readme thoroughly documents all the options you can use. You may also wish to browse the examples in `Packages/synesthesia/include`.
 
+What should you use this plugin for?
+------------------------------------
+
+- **Ad-hoc highlighting of text.** This plugin is a quick and lightweight way to draw attention to important articles in your text. A few example uses:
+	+ Highlighting keywords in log files
+	+ Drawing attention to characters or locations in writing
+	+ Visualising colours (check out `Pretty.json`)
+	+ Lightweight markup (check out [MarkdownEditing](https://github.com/SublimeText-Markdown/MarkdownEditing) for Markdown)
+	+ Quick-and-dirty way to add keywords to existing language definitions
+- *This plugin is not an easier way to specify syntax highlighting for a programming language.* A list of regular expressions isn't a great way to handle most programming languages. Making syntax highlighting easier is the niche [AAAPackageDev](https://github.com/SublimeText/AAAPackageDev) fills.
+
 ### Colours
 
 Keyword colours are specified as RGB in hexadecimal form (`#rrggbb`). We can also use colour names, like `blue` or `red`; a list of these can be found [here](http://en.wikipedia.org/wiki/Web_colours#X11_color_names).
@@ -181,17 +192,6 @@ To locate them you may have to [look inside your `.sublime-package` files](http:
 `deriving` will insert the new keywords under the [`repository`](https://manual.macromates.com/en/language_grammars) of the existing `tmLanguage` file; this way they can be easily referenced and used throughout it.
 
 Finally, it will make the existing language definition aware of the additions by inserting references to them into the appropriate places. In this case that's `repository.inline` (this is nonstandard notation, as it denotes a path in the `tmTheme` file rather than a scope). `inline` is the scope for all of the inline text you see in Markdown documents, so that's where our additions will surface. You might have to poke around the `.tmTheme` file to figure out the best or most general location for this. This differs between language definitions so it unfortunately cannot be done automatically.
-
-What should you use this plugin for?
-------------------------------------
-
-- **Ad-hoc highlighting of text.** This plugin is a quick and lightweight way to draw attention to important articles in your text. A few example uses:
-	+ Highlighting keywords in log files
-	+ Drawing attention to characters or locations in writing
-	+ Visualising colours (check out `Pretty.json`)
-	+ Lightweight markup (check out [MarkdownEditing](https://github.com/SublimeText-Markdown/MarkdownEditing) for Markdown)
-	+ Quick-and-dirty way to add keywords to existing language definitions
-- *This plugin is not an easier way to specify syntax highlighting for a programming language.* A list of regular expressions isn't a great way to handle most programming languages. Making syntax highlighting easier is the niche [AAAPackageDev](https://github.com/SublimeText/AAAPackageDev) fills.
 
 Inner Workings
 --------------
