@@ -6,8 +6,10 @@ from .colourful import string_to_colour, random_colour, string_to_dark_colour
 
 PATH_SEPARATOR = "\\" if sublime.platform() == "windows" else "/"
 
-PACKAGES_PATH = sublime.packages_path()
-SYNESTHESIA_PATH = os.path.join(sublime.packages_path(), "synesthesia")
+def plugin_loaded():
+    global PACKAGES_PATH, SYNESTHESIA_PATH
+    PACKAGES_PATH = sublime.packages_path()
+    SYNESTHESIA_PATH = os.path.join(sublime.packages_path(), "synesthesia")
 
 def write_file(filepath, s):
     f = open(filepath, 'w')
@@ -166,7 +168,6 @@ def process_tmLanguage(scheme_name, path, keywords, insertion_scope):
 
     path = os.path.join(SYNESTHESIA_PATH, scheme_name + '.tmLanguage')
 
-    print("Writing tmLanguage file to", path)
     plistlib.writePlist(plist, path)
     print("Generated %s" % (path))
 
