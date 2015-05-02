@@ -26,8 +26,8 @@ additional_extension = """		<string>%s</string>
 
 new_file = """{
 	"keywords": {
-		"hello": "#0CBDE8",
-		"world": "dodgerblue"
+		"roses": "#ff0000",
+		"violets": "blue"
 		$0
 	}
 }"""
