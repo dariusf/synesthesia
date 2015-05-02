@@ -267,6 +267,8 @@ class HighlightingScheme():
         else:
             self.generate_non_derived_files(autocompletion, theme_name, settings_map, extensions, theme_scopes, keywords, keyword_map, count)
 
+        sublime.status_message("Highlighting scheme %s generated." % theme_name)
+
     def generate_derived_files(self, theme_name, keyword_map, settings_map):
         # Check inputs are present
         for required_key in ["tmLanguage", "tmTheme", "sublime-settings", "tmLanguage_scope"]:
@@ -304,7 +306,7 @@ class HighlightingScheme():
         process_tmTheme(theme_name, derived_theme_path, keywords)
         process_sublime_settings(theme_name, derived_settings_path, settings_map)
 
-    def generate_non_derived_files(self, autocompletion, themename, settings_map, extensions, theme_scopes, keywords, keyword_map, count):
+    def generate_non_derived_files(self, autocompletion, theme_name, settings_map, extensions, theme_scopes, keywords, keyword_map, count):
         for key in list(keyword_map.keys()):
             regex = key
             value = keyword_map[key]
@@ -361,14 +363,13 @@ class HighlightingScheme():
             print("%s does not exist; created" % package_directory)
             os.makedirs(package_directory)
 
-        scope_filename = os.path.join(package_directory, themename + ".tmLanguage")
-        theme_filename = os.path.join(package_directory, themename + ".tmTheme")
-        settings_filename = os.path.join(package_directory, themename + ".sublime-settings")
-        write_file(scope_filename, templates.scope % (scope_extensions, themename, keywords, "source" if autocompletion else "text", themename, uuid.uuid4()))
+        scope_filename = os.path.join(package_directory, theme_name + ".tmLanguage")
+        theme_filename = os.path.join(package_directory, theme_name + ".tmTheme")
+        settings_filename = os.path.join(package_directory, theme_name + ".sublime-settings")
+        write_file(scope_filename, templates.scope % (scope_extensions, theme_name, keywords, "source" if autocompletion else "text", theme_name, uuid.uuid4()))
         # print(os.path.dirname(os.path.realpath(__file__)))
         print("Written to %s." % scope_filename)
-        write_file(theme_filename, templates.theme % (themename, self.default_colours, theme_scopes, uuid.uuid4()))
+        write_file(theme_filename, templates.theme % (theme_name, self.default_colours, theme_scopes, uuid.uuid4()))
         print("Written to %s." % theme_filename)
-        write_file(settings_filename, templates.default_settings % (themename, settings_extensions, other_settings))
+        write_file(settings_filename, templates.default_settings % (theme_name, settings_extensions, other_settings))
         print("Written to %s." % settings_filename)
-        sublime.status_message("Highlighting scheme %s generated." % themename)

@@ -43,4 +43,7 @@ class SynesthesiaDeleteCommand(sublime_plugin.WindowCommand):
 				else:
 					sublime.status_message("Highlighting scheme %s not found." % which)
 
-		window.show_quick_panel(without_extensions, done)
+		if not without_extensions:
+			sublime.status_message("No highlighting schemes to remove.")
+		else:
+			window.show_quick_panel(without_extensions, done)
