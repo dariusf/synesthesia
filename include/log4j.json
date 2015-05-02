@@ -1,0 +1,10 @@
+{
+	"keywords": {
+        "\\[[^\\]]+\\]|^\\d+| - |INFO": "grey",
+        "WARN": "orange",
+        "ERROR": "red",
+        "java\\.[a-z.]+\\.[A-Z][a-z]+(Error|Exception)": "auto",
+        "([A-Z][a-z]+)+\\.java:\\d+": "auto"
+	},
+    "extensions": ["log"]
+}
