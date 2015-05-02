@@ -1,4 +1,4 @@
-import re, uuid, os, json, plistlib
+import re, uuid, os.path, json, plistlib
 import sublime, sublime_plugin
 from . import templates
 from . import colours
@@ -66,6 +66,13 @@ def colour(key, c, dark=False):
     elif c in colours.name_to_hex:
         c = colours.name_to_hex[c]
     return c
+
+def first_valid_path(*paths):
+    ''' Takes a list of paths, returning the first valid path, or None if none are valid '''
+    for path in paths:
+        if os.path.isfile(path):
+            return path
+    return None
 
 class SynesthesiaCompileCommand(sublime_plugin.WindowCommand):
     def run(self, cmd = []):
@@ -256,7 +263,7 @@ class HighlightingScheme():
         if "deriving" in self.data:
             self.generate_derived_files(theme_name, keyword_map, settings_map)
         else:
-            self.generate_non_derived_files(autocompletion, themename, settings_map, extensions, theme_scopes, keywords, keyword_map, count)
+            self.generate_non_derived_files(autocompletion, theme_name, settings_map, extensions, theme_scopes, keywords, keyword_map, count)
 
     def generate_derived_files(self, theme_name, keyword_map, settings_map):
         # Check inputs are present
@@ -269,12 +276,26 @@ class HighlightingScheme():
         for file_name_key in ["tmLanguage", "tmTheme", "sublime-settings"]:
             self.data["deriving"][file_name_key] += "." + file_name_key
 
-        # TODO search places other than the package directory
-        derived_theme_path = os.path.join(PACKAGES_PATH, self.data["deriving"]["tmTheme"])
-        derived_language_path = os.path.join(PACKAGES_PATH, self.data["deriving"]["tmLanguage"])
-        derived_settings_path = os.path.join(PACKAGES_PATH, self.data["deriving"]["sublime-settings"])
+        tmTheme = self.data["deriving"]["tmTheme"]
+        tmLanguage = self.data["deriving"]["tmLanguage"]
+        sublime_settings = self.data["deriving"]["sublime-settings"]
 
-        # collect information from data structures
+        derived_theme_path = first_valid_path(os.path.join(self.directory, tmTheme), os.path.join(SYNESTHESIA_PATH, tmTheme))
+        derived_language_path = first_valid_path(os.path.join(self.directory, tmLanguage), os.path.join(SYNESTHESIA_PATH, tmLanguage))
+        derived_settings_path = first_valid_path(os.path.join(self.directory, sublime_settings), os.path.join(SYNESTHESIA_PATH, sublime_settings))
+
+        if not derived_theme_path:
+            print("Could not locate %s" % tmTheme)
+            return
+        if not derived_language_path:
+            print("Could not locate %s" % tmLanguage)
+            return
+        if not derived_settings_path:
+            print("Could not locate %s" % sublime_settings)
+            return
+
+        # All required info is present
+        # Build data structures
         keywords = [Keyword(regex, value) for (regex, value) in keyword_map.items()]
 
         process_tmLanguage(theme_name, derived_language_path, keywords, self.data["deriving"]["tmLanguage_scope"])
