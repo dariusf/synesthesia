@@ -59,14 +59,14 @@ def uglify(r, g, b):
 
 	return r, g, b
 
-def random_colour():
+def random_rgb():
 	r = random.randrange(0, 256)
 	g = random.randrange(0, 256)
 	b = random.randrange(0, 256)
+	return prettify(r, g, b)
 
-	r, g, b = prettify(r, g, b)
-
-	return rgb_to_string(r, g, b)
+def random_colour():
+	return rgb_to_string(*random_rgb())
 
 def string_to_colour(s):
 	h = int(hashlib.sha1(s.encode('utf-8')).hexdigest(), 16)
@@ -89,3 +89,16 @@ def string_to_dark_colour(s):
 	r, g, b = uglify(r, g, b)
 
 	return rgb_to_string(r, g, b)
+
+def cyclic_colours(n):
+	golden_ratio_conjugate = 0.618033988749895
+	h, _, _ = colorsys.rgb_to_hsv(*random_rgb())
+
+	result = []
+	for i in range(0, n):
+		h = (h + golden_ratio_conjugate) % 1
+		r, g, b = colorsys.hsv_to_rgb(h, 0.5, 0.95)
+		r, g, b = r*255, g*255, b*255
+		result.append(rgb_to_string(r, g, b))
+
+	return result

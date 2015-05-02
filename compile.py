@@ -2,7 +2,7 @@ import re, uuid, os.path, json, plistlib
 import sublime, sublime_plugin
 from . import templates
 from . import colours
-from .colourful import string_to_colour, random_colour, string_to_dark_colour
+from .colourful import string_to_colour, random_colour, string_to_dark_colour, cyclic_colours
 
 PATH_SEPARATOR = "\\" if sublime.platform() == "windows" else "/"
 
@@ -227,6 +227,7 @@ class HighlightingScheme():
         count = 0
         auto_keywords_list = "auto_keywords" in self.data and self.data["auto_keywords"] or []
         random_keywords_list = "random_keywords" in self.data and self.data["random_keywords"] or []
+        cyclic_keywords_list = "cyclic_keywords" in self.data and self.data["cyclic_keywords"] or []
 
         extensions = "extensions" in self.data and self.data["extensions"] or ["txt", "md"]
 
@@ -261,9 +262,16 @@ class HighlightingScheme():
         for keyword in auto_keywords_list:
             if keyword not in keyword_map:
                 keyword_map[keyword] = "auto"
+
         for keyword in random_keywords_list:
             if keyword not in keyword_map:
                 keyword_map[keyword] = "random"
+
+        cyclic = cyclic_colours(len(cyclic_keywords_list))
+        print("Cyclic colours:", cyclic)
+        for keyword, colour in zip(cyclic_keywords_list, cyclic):
+            if keyword not in keyword_map:
+                keyword_map[keyword] = colour
 
         # generate syntax and theme files
         if "deriving" in self.data:
