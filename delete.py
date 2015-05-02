@@ -2,8 +2,7 @@ import sublime, sublime_plugin
 import os, re
 
 def extract_syntax_name(path):
-	temp = path.split("/")
-	return temp[len(temp)-1].split(".")[0]
+	return os.path.split(path)[1].split(".")[0]
 
 class SynesthesiaDeleteCommand(sublime_plugin.WindowCommand):
 	def run(self):
@@ -23,7 +22,7 @@ class SynesthesiaDeleteCommand(sublime_plugin.WindowCommand):
 				# Check if open views are using the syntax file that is going to be deleted
 				for v in self.window.views():
 					current_def = extract_syntax_name(v.settings().get('syntax'))
-					if (current_def.lower() == which):
+					if (current_def == which):
 						v.set_syntax_file("Packages/Text/Plain text.tmLanguage")
 
 				# Delete the files
