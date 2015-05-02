@@ -166,6 +166,7 @@ def process_tmLanguage(scheme_name, path, keywords, insertion_scope):
 
     path = os.path.join(SYNESTHESIA_PATH, scheme_name + '.tmLanguage')
 
+    print("Writing tmLanguage file to", path)
     plistlib.writePlist(plist, path)
     print("Generated %s" % (path))
 
