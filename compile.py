@@ -226,6 +226,7 @@ class HighlightingScheme():
         settings_map = "settings" in self.data and self.data["settings"] or {}
         count = 0
         auto_keywords_list = "auto_keywords" in self.data and self.data["auto_keywords"] or []
+        random_keywords_list = "random_keywords" in self.data and self.data["random_keywords"] or []
 
         extensions = "extensions" in self.data and self.data["extensions"] or ["txt", "md"]
 
@@ -256,10 +257,13 @@ class HighlightingScheme():
                                 if key not in keyword_map:
                                     keyword_map[key] = new_keywords[key]
 
-        # turn auto keywords into actual keywords
+        # turn syntactic sugar into actual keywords
         for keyword in auto_keywords_list:
             if keyword not in keyword_map:
                 keyword_map[keyword] = "auto"
+        for keyword in random_keywords_list:
+            if keyword not in keyword_map:
+                keyword_map[keyword] = "random"
 
         # generate syntax and theme files
         if "deriving" in self.data:
