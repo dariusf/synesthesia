@@ -228,6 +228,7 @@ class HighlightingScheme():
         auto_keywords_list = "auto_keywords" in self.data and self.data["auto_keywords"] or []
         random_keywords_list = "random_keywords" in self.data and self.data["random_keywords"] or []
         cyclic_keywords_list = "cyclic_keywords" in self.data and self.data["cyclic_keywords"] or []
+        cyclic_seed = "cyclic_seed" in self.data and self.data["cyclic_seed"] or None
 
         extensions = "extensions" in self.data and self.data["extensions"] or ["txt", "md"]
 
@@ -267,8 +268,9 @@ class HighlightingScheme():
             if keyword not in keyword_map:
                 keyword_map[keyword] = "random"
 
-        cyclic = cyclic_colours(len(cyclic_keywords_list))
-        print("Cyclic colours:", cyclic)
+        cyclic = cyclic_colours(len(cyclic_keywords_list), cyclic_seed)
+        if not cyclic_seed:
+            print("Cyclic colours:", cyclic)
         for keyword, colour in zip(cyclic_keywords_list, cyclic):
             if keyword not in keyword_map:
                 keyword_map[keyword] = colour

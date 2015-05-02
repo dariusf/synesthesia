@@ -90,13 +90,14 @@ def string_to_dark_colour(s):
 
 	return rgb_to_string(r, g, b)
 
-def cyclic_colours(n):
-	golden_ratio_conjugate = 0.618033988749895
-	h, _, _ = colorsys.rgb_to_hsv(*random_rgb())
+GOLDEN_RATIO_CONJUGATE = 0.618033988749895
+
+def cyclic_colours(n, seed):
+	h, _, _ = colorsys.rgb_to_hsv(*(random_rgb() if not seed else string_to_rgb(seed)))
 
 	result = []
 	for i in range(0, n):
-		h = (h + golden_ratio_conjugate) % 1
+		h = (h + GOLDEN_RATIO_CONJUGATE) % 1
 		r, g, b = colorsys.hsv_to_rgb(h, 0.5, 0.95)
 		r, g, b = r*255, g*255, b*255
 		result.append(rgb_to_string(r, g, b))
