@@ -249,15 +249,27 @@ class HighlightingScheme():
             inclusions = self.data["include"]
             inclusions.reverse()
             already_included = [theme_name]
+            in_include_directory = get_include_contents()
             while len(inclusions) > 0:
                 i = inclusions.pop()
                 # prevents recursive dependency, since it only looks in the same directory
-                if i not in already_included:
+                if i in already_included:
+                    print("%s is already included." % (i))
+                else:
                     already_included.append(i)
+                    print("Looking for %s in %s..." % (i, self.directory), end=' ')
                     _, entries = load_json_data(os.path.join(self.directory, i + '.json'))
-                    if entries is None:
-                        print("Searching in Packages/synesthesia/include...")
-                        _, entries = load_json_data(os.path.join(sublime.packages_path(), "synesthesia", "include", i + '.json'))
+                    if entries is not None:
+                        print("Found!")
+                    else:
+                        print("Looking in %s..." % (SYNESTHESIA_INCLUDE_PATH), end=' ')
+                        if i in in_include_directory:
+                            print("Found!")
+                            _, entries = load_json_data(sublime.load_resource(os.path.join(SYNESTHESIA_INCLUDE_PATH, i + '.json')), False)
+                        else:
+                            print("Could not find %s." % (i))
+
+                    # Proceed if after all that we actually ended up with some input
                     if entries is not None:
                         print("%s included." % (i + '.json'))
                         if "include" in entries:
