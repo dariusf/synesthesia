@@ -10,7 +10,7 @@ def plugin_loaded():
     global PACKAGES_PATH, SYNESTHESIA_OUTPUT_PATH, SYNESTHESIA_INCLUDE_PATH
     PACKAGES_PATH = sublime.packages_path()
     SYNESTHESIA_INCLUDE_PATH = "Packages/synesthesia/include/"
-    SYNESTHESIA_OUTPUT_PATH = os.path.join(sublime.packages_path(), "synesthesia")
+    SYNESTHESIA_OUTPUT_PATH = os.path.join(sublime.packages_path(), "User", "synesthesia")
 
 def write_file(filepath, s):
     f = open(filepath, 'w')
