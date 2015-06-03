@@ -44,12 +44,15 @@ def read_default_settings(view):
 
     return None
 
-def load_json_data(filepath):
-    _, themename, ext = split_filepath(filepath)
+def load_json_data(source, path=True):
+    _, themename, ext = split_filepath(source)
 
     entries = None
     try:
-        entries = json.loads(read_file(filepath))
+        if path:
+            entries = json.loads(read_file(source))
+        else:
+            entries = json.loads(source)
     except ValueError:
         sublime.status_message("%s.%s is not a valid JSON file." % (themename, ext))
     except IOError:
