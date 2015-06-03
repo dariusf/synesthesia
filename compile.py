@@ -32,6 +32,11 @@ def split_filepath(abspath):
     extparts = filename.split(".")
     return PATH_SEPARATOR.join(segments[:-1]), extparts[0], '.'.join(extparts[1:])
 
+def ensure_directory_exists(path):
+    if not os.path.exists(path):
+        print("%s does not exist; created" % path)
+        os.makedirs(path)
+
 def read_default_settings(view):
     colour_scheme_path = re.sub("Packages", sublime.packages_path(), view.settings().get('color_scheme'))
 
@@ -340,6 +345,8 @@ class HighlightingScheme():
         # Build data structures
         keywords = [Keyword(regex, value) for (regex, value) in keyword_map.items()]
 
+        ensure_directory_exists(SYNESTHESIA_OUTPUT_PATH)
+
         process_tmLanguage(theme_name, derived_language_path, keywords, self.data["deriving"]["tmLanguage_scope"])
         process_tmTheme(theme_name, derived_theme_path, keywords)
         process_sublime_settings(theme_name, derived_settings_path, settings_map)
@@ -396,9 +403,7 @@ class HighlightingScheme():
         other_settings = ''.join([templates.other_settings % (key, settings_map[key]) for key in list(settings_map.keys())])
 
         # produce output files
-        if not os.path.exists(SYNESTHESIA_OUTPUT_PATH):
-            print("%s does not exist; created" % SYNESTHESIA_OUTPUT_PATH)
-            os.makedirs(SYNESTHESIA_OUTPUT_PATH)
+        ensure_directory_exists(SYNESTHESIA_OUTPUT_PATH)
 
         scope_filename = os.path.join(SYNESTHESIA_OUTPUT_PATH, theme_name + ".tmLanguage")
         theme_filename = os.path.join(SYNESTHESIA_OUTPUT_PATH, theme_name + ".tmTheme")
