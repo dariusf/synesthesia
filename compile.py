@@ -396,14 +396,13 @@ class HighlightingScheme():
         other_settings = ''.join([templates.other_settings % (key, settings_map[key]) for key in list(settings_map.keys())])
 
         # produce output files
-        package_directory = os.path.join(sublime.packages_path(), "synesthesia")
-        if not os.path.exists(package_directory):
-            print("%s does not exist; created" % package_directory)
-            os.makedirs(package_directory)
+        if not os.path.exists(SYNESTHESIA_OUTPUT_PATH):
+            print("%s does not exist; created" % SYNESTHESIA_OUTPUT_PATH)
+            os.makedirs(SYNESTHESIA_OUTPUT_PATH)
 
-        scope_filename = os.path.join(package_directory, theme_name + ".tmLanguage")
-        theme_filename = os.path.join(package_directory, theme_name + ".tmTheme")
-        settings_filename = os.path.join(package_directory, theme_name + ".sublime-settings")
+        scope_filename = os.path.join(SYNESTHESIA_OUTPUT_PATH, theme_name + ".tmLanguage")
+        theme_filename = os.path.join(SYNESTHESIA_OUTPUT_PATH, theme_name + ".tmTheme")
+        settings_filename = os.path.join(SYNESTHESIA_OUTPUT_PATH, theme_name + ".sublime-settings")
         write_file(scope_filename, templates.scope % (scope_extensions, theme_name, keywords, "source" if autocompletion else "text", theme_name, uuid.uuid4()))
         # print(os.path.dirname(os.path.realpath(__file__)))
         print("Written to %s." % scope_filename)
