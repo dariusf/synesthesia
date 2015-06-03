@@ -7,10 +7,11 @@ from .colourful import string_to_colour, random_colour, string_to_dark_colour, c
 PATH_SEPARATOR = "\\" if sublime.platform() == "windows" else "/"
 
 def plugin_loaded():
-    global PACKAGES_PATH, SYNESTHESIA_OUTPUT_PATH, SYNESTHESIA_INCLUDE_PATH
+    global PACKAGES_PATH, SYNESTHESIA_INCLUDE_PATH, SYNESTHESIA_OUTPUT_PATH, SYNESTHESIA_OUTPUT_PATH_RELATIVE
     PACKAGES_PATH = sublime.packages_path()
     SYNESTHESIA_INCLUDE_PATH = "Packages/synesthesia/include/"
     SYNESTHESIA_OUTPUT_PATH = os.path.join(sublime.packages_path(), "User", "synesthesia")
+    SYNESTHESIA_OUTPUT_PATH_RELATIVE = "Packages/User/synesthesia"
 
 def write_file(filepath, s):
     f = open(filepath, 'w')
@@ -211,7 +212,7 @@ def process_sublime_settings(scheme_name, path, existing_settings):
 
     for key in existing_settings:
         settings[key] = existing_settings[key]
-    settings["color_scheme"] = 'Packages/synesthesia/%s.tmTheme' % (scheme_name)
+    settings["color_scheme"] = '%s/%s.tmTheme' % (SYNESTHESIA_OUTPUT_PATH_RELATIVE, scheme_name)
 
     path = os.path.join(SYNESTHESIA_OUTPUT_PATH, scheme_name + '.sublime-settings')
 
@@ -413,5 +414,5 @@ class HighlightingScheme():
         print("Written to %s." % scope_filename)
         write_file(theme_filename, templates.theme % (theme_name, self.default_colours, theme_scopes, uuid.uuid4()))
         print("Written to %s." % theme_filename)
-        write_file(settings_filename, templates.default_settings % (theme_name, settings_extensions, other_settings))
+        write_file(settings_filename, templates.default_settings % (SYNESTHESIA_OUTPUT_PATH_RELATIVE, theme_name, settings_extensions, other_settings))
         print("Written to %s." % settings_filename)
