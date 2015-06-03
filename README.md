@@ -1,7 +1,7 @@
 Synesthesia
 ===========
 
-A plugin for Sublime Text 2/3 for highlighting text with pretty colours.
+A Sublime Text 3 plugin for highlighting text with pretty colours.
 
 Installation
 ------------
