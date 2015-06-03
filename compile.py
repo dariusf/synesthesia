@@ -7,9 +7,10 @@ from .colourful import string_to_colour, random_colour, string_to_dark_colour, c
 PATH_SEPARATOR = "\\" if sublime.platform() == "windows" else "/"
 
 def plugin_loaded():
-    global PACKAGES_PATH, SYNESTHESIA_PATH
+    global PACKAGES_PATH, SYNESTHESIA_OUTPUT_PATH, SYNESTHESIA_INCLUDE_PATH
     PACKAGES_PATH = sublime.packages_path()
-    SYNESTHESIA_PATH = os.path.join(sublime.packages_path(), "synesthesia")
+    SYNESTHESIA_INCLUDE_PATH = "Packages/synesthesia/include/"
+    SYNESTHESIA_OUTPUT_PATH = os.path.join(sublime.packages_path(), "synesthesia")
 
 def write_file(filepath, s):
     f = open(filepath, 'w')
@@ -59,6 +60,14 @@ def load_json_data(source, path=True):
         print("%s.%s could not be loaded." % (themename, ext))
 
     return themename, entries
+
+def get_include_contents():
+    ''' Returns the contents of the include directory, abstracting away differences between directory and .sublime_package format '''
+    include = re.compile(SYNESTHESIA_INCLUDE_PATH)
+    # Get json file names in include directory
+    files = [include.sub('', x) for x in sublime.find_resources('*.json') if include.search(x) is not None]
+    # Strip extension
+    return [x[:-5] for x in files]
 
 def colour(key, c, dark=False):
     c = c.lower()
@@ -169,7 +178,7 @@ def process_tmLanguage(scheme_name, path, keywords, insertion_scope):
             'include': '#%s' % (keyword.name)
         })
 
-    path = os.path.join(SYNESTHESIA_PATH, scheme_name + '.tmLanguage')
+    path = os.path.join(SYNESTHESIA_OUTPUT_PATH, scheme_name + '.tmLanguage')
 
     plistlib.writePlist(plist, path)
     print("Generated %s" % (path))
@@ -187,7 +196,7 @@ def process_tmTheme(scheme_name, path, keywords):
             'settings': {'foreground': keyword.colour}
         })
 
-    path = os.path.join(SYNESTHESIA_PATH, scheme_name + '.tmTheme')
+    path = os.path.join(SYNESTHESIA_OUTPUT_PATH, scheme_name + '.tmTheme')
 
     plistlib.writePlist(plist, path)
     print("Generated %s" % (path))
@@ -199,7 +208,7 @@ def process_sublime_settings(scheme_name, path, existing_settings):
         settings[key] = existing_settings[key]
     settings["color_scheme"] = 'Packages/synesthesia/%s.tmTheme' % (scheme_name)
 
-    path = os.path.join(SYNESTHESIA_PATH, scheme_name + '.sublime-settings')
+    path = os.path.join(SYNESTHESIA_OUTPUT_PATH, scheme_name + '.sublime-settings')
 
     write_file(path, json.dumps(settings, sort_keys=False, indent=4, separators=(',', ': ')))
     print("Generated %s" % (path))
@@ -301,9 +310,9 @@ class HighlightingScheme():
         tmLanguage = self.data["deriving"]["tmLanguage"]
         sublime_settings = self.data["deriving"]["sublime-settings"]
 
-        derived_theme_path = first_valid_path(os.path.join(self.directory, tmTheme), os.path.join(SYNESTHESIA_PATH, tmTheme))
-        derived_language_path = first_valid_path(os.path.join(self.directory, tmLanguage), os.path.join(SYNESTHESIA_PATH, tmLanguage))
-        derived_settings_path = first_valid_path(os.path.join(self.directory, sublime_settings), os.path.join(SYNESTHESIA_PATH, sublime_settings))
+        derived_theme_path = first_valid_path(os.path.join(self.directory, tmTheme), os.path.join(SYNESTHESIA_OUTPUT_PATH, tmTheme))
+        derived_language_path = first_valid_path(os.path.join(self.directory, tmLanguage), os.path.join(SYNESTHESIA_OUTPUT_PATH, tmLanguage))
+        derived_settings_path = first_valid_path(os.path.join(self.directory, sublime_settings), os.path.join(SYNESTHESIA_OUTPUT_PATH, sublime_settings))
 
         if not derived_theme_path:
             print("Could not locate %s" % tmTheme)
